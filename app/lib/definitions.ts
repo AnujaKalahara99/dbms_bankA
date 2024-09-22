@@ -1,88 +1,146 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-};
+// Branch
+export interface Branch {
+  Name: string;
+  Location: string;
+  Branch_ID: string;
+}
 
-export type Customer = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-};
+// Manual Loan
+export interface ManualLoan {
+  Loan_ID: string;
+  Status: string;
+  Branch_ID: string;
+  Employee_ID: string;
+}
 
-export type Invoice = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
-};
+// Customer
+export interface Customer {
+  Customer_ID: string;
+  Name: string;
+  Address_Line_1: string;
+  Address_Line_2: string;
+  City: string;
+  Phone_Number: string;
+  Email: string;
+  Password: string;
+}
 
-export type Revenue = {
-  month: string;
-  revenue: number;
-};
+// Account
+export interface Account {
+  Account_ID: string;
+  Balance: number;
+  Branch_ID: string;
+  Customer_ID: string;
+}
 
-export type LatestInvoice = {
-  id: string;
-  name: string;
-  image_url: string;
-  email: string;
-  amount: string;
-};
+// Loan
+export interface Loan {
+  Loan_ID: string;
+  Amount: number;
+  Interest_Rate: number;
+  Issued_Date: Date;
+  Duration_From_Months: number;
+  Customer_ID: string;
+  Acount_ID: string;
+}
 
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
-  amount: number;
-};
+// Loan Installment
+export interface LoanInstallment {
+  Instalment_ID: string;
+  Due_Date: Date;
+  Amount: number;
+  Status: string;
+  Loan_ID: string;
+}
 
-export type InvoicesTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
+// Transaction
+export interface Transaction {
+  Transaction_ID: string;
+  Source_Account_ID: string;
+  Destination_Account_ID: string;
+  Date: Date;
+  Time: string;
+  Amount: number;
+  Type: string;
+  Branch_ID: string;
+}
 
-export type CustomersTableType = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: number;
-  total_paid: number;
-};
+// Plan Type
+export interface PlanType {
+  Plan_ID: string;
+  Plan_Name: string;
+  Interest_Rate: number;
+}
 
-export type FormattedCustomersTable = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
-};
+// Saving Account
+export interface SavingAccount {
+  Acount_ID: string;
+  Remaining_Withdrawals: number;
+  Plan_ID: string;
+}
 
-export type CustomerField = {
-  id: string;
-  name: string;
-};
+// FD Period
+export interface FDPeriod {
+  Period: string;
+  Interest_Rate: number;
+}
 
-export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
+// FD
+export interface FD {
+  FD_ID: string;
+  Account_ID: string;
+  Amount: number;
+  Start_Date: Date;
+  Period: string;
+}
+
+// Online Loan
+export interface OnlineLoan {
+  Loan_ID: string;
+  Fixed_Deposite_ID: string;
+}
+
+// Employee
+export interface Employee {
+  Name: string;
+  Employee_ID: string; // Fixed typo from Employee _ID
+  Address_Line_1: string;
+  Address_Line_2: string;
+  City: string;
+  Phone_Number: string;
+  Email: string;
+  NIC: string;
+  Branch_ID: string;
+  Is_Manager: boolean;
+  Password: string;
+}
+
+// Current Account
+export interface CurrentAccount {
+  Acount_ID: string;
+}
+
+// Personal
+export interface Personal {
+  Customer_ID: string;
+  NIC: string;
+  Date_of_Birth: Date;
+}
+
+// Organization
+export interface Organization {
+  Customer_ID: string;
+  Registration_Number: number;
+  Registration_Date: Date;
+}
+
+// Configurations (Singleton table, can define as constants or separate interface)
+export interface Configurations {
+  Online_Loan_Upper_Bound: number;
+  Online_Loan_Max_Percentage: number;
+  Savings_Account_Max_Withdrawal_Count: number;
+}
+
+export interface CountResult {
+  count: number;
+}
