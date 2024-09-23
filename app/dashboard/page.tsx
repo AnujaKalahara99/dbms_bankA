@@ -1,6 +1,6 @@
 import { fetchCustomersCount } from "@/app/lib/data";
-import { lusitana } from "../fonts";
-import { Card } from "./cards";
+import { lusitana } from "../ui/fonts";
+import { Card } from "../ui/dashboard/cards";
 
 export default async function Page() {
   const customerCount = await fetchCustomersCount();

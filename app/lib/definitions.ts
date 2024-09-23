@@ -25,6 +25,33 @@ export interface Customer {
   Password: string;
 }
 
+export interface FilteredCustomer {
+  Customer_ID: string;
+  Account_IDs: string;
+  Total_Balance: number;
+  Name: string;
+  City: string;
+  Phone_Number: string;
+  Email: string;
+}
+
+export interface FullCustomerDetails {
+  Customer_ID: string;
+  Name: string;
+  Address_Line_1: string;
+  Address_Line_2: string;
+  City: string;
+  Phone_Number: string;
+  Email: string;
+  Total_Balance: number;
+  Accounts: {
+    Account_ID: string;
+    Balance: number;
+    Branch_ID: string;
+    Branch_Name: string;
+  }[];
+}
+
 // Account
 export interface Account {
   Account_ID: string;
