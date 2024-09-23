@@ -74,7 +74,7 @@ export default function EditInvoiceForm({
       Type: "string",
       ID: "email",
       Placeholder: "Enter Email",
-      canEdit: true,
+      canEdit: false,
     },
     {
       Title: "Total Balance",

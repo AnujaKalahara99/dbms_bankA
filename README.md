@@ -10,7 +10,7 @@ Hi! This is the official repository holding valuable code of **Bank A** website.
 
 2.  use[`pnpm`](https://pnpm.io/) as your package manager, as it's faster and more efficient than `npm` or `yarn`. If you don't have `pnpm` installed, you can install it globally by running
 
-    ```nodejs
+    ```
     npm install -g pnpm
     ```
 
@@ -22,21 +22,21 @@ Hi! This is the official repository holding valuable code of **Bank A** website.
 
 4.  Install any extra packages using
 
-    ```nodejs
-    pnpm install\
+    ```
+    pnpm install
     ```
 
 5.  Create MySql Database using workbench and run the queries in SQL Queries section
 6.  Open .env in the root folder of your project and rewrite the following details
 
-```
+    ```
     MYSQL_HOST=where_you_host_database,_probably_localhost
-	MYSQL_USER=user_of_your_databse,_probably_root
-	MYSQL_PASSWORD=password_of_user
-	MYSQL_DB=bank_project
-```
+    MYSQL_USER=user_of_your_databse,_probably_root
+    MYSQL_PASSWORD=password_of_user
+    MYSQL_DB=bank_project
+    ```
 
-8.  Run the code in dev mode
+7.  Run the code in dev mode
 
     pnpm run dev
 
