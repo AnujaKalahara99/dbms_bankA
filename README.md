@@ -280,9 +280,10 @@ INSERT INTO `Configurations` (`Online Loan Upper Bound`, `Online Loan Max Percen
 ## We are Team 12!
 
 ```mermaid
-- Dilanka
-- Stephan
-- Susaru
-- Osanda
-- Anuja
+graph LR
+A(Dilanka) -----> D((Team 12))
+B(Anuja) ----> D((Team 12))
+C(Susaru) ---> D((Team 12))
+E(Osanda) ---> D((Team 12))
+F(Stephan) --> D((Team 12))
 ```
