@@ -9,6 +9,21 @@ export const authConfig = {
     // while this file is also used in non-Node.js environments
   ],
   callbacks: {
+    // jwt({ token, user }) {
+    //   if (user && user.email) {
+    //     token.data = getUser(user.email);
+    //   }
+    //   return token;
+    // },
+    // session: ({ session, token }) => {
+    //   return {
+    //     ...session,
+    //     user: {
+    //       ...session.user,
+    //       data: token.data,
+    //     },
+    //   };
+    // },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");

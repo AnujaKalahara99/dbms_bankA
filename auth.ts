@@ -6,7 +6,7 @@ import type { User } from "@/app/lib/definitions";
 import { authConfig } from "./auth.config";
 import { connectToDatabase } from "./app/lib/mysql";
 
-async function getUser(email: string): Promise<User | undefined> {
+export async function getUser(email: string): Promise<User | undefined> {
   try {
     const mysql = await connectToDatabase();
 
