@@ -13,17 +13,6 @@ export interface ManualLoan {
   Employee_ID: string;
 }
 
-//User
-export interface User {
-  id: string;
-  Name: string;
-  Email: string;
-  Password: string;
-  Is_Customer: boolean;
-  Is_Employee: boolean;
-  Is_Manager: boolean;
-}
-
 // Customer
 export interface Customer {
   Customer_ID: string;

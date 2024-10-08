@@ -3,8 +3,8 @@ import LoginForm from "@/app/ui/login-form";
 
 export default function LoginPage() {
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
+    <main className="flex items-center justify-center h-screen flex-col md:flex-row">
+      <div className="relative flex w-full h-full max-w-[400px] flex-col justify-center space-y-2.5 p-4">
         <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
           <div className="w-32 text-white md:w-36">
             <BankALogo />
@@ -25,15 +25,13 @@ export default function LoginPage() {
           <div className="w-full py-2">
             <b>Employee Email</b>
             <p>
-              use <u>bob.brown@example.com</u>
-              with password <i>employee</i>
+              use <u>bob.brown@example.com</u> with password <i>employee</i>
             </p>
           </div>
           <div className="w-full py-2">
             <b>Manager Email</b>
             <p>
-              use <u>alice.green@example.com</u>
-              with password <i>employee</i>
+              use <u>alice.green@example.com</u> with password <i>employee</i>
             </p>
           </div>
         </div>

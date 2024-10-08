@@ -4,6 +4,7 @@ import { Card } from "../ui/dashboard/cards";
 
 export default async function Page() {
   const customerCount = await fetchCustomersCount();
+
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>

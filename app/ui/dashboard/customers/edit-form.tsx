@@ -199,7 +199,7 @@ export default function EditInvoiceForm({
 
         {!isEditing && (
           <Button type="button" onClick={() => setIsEditing(true)}>
-            Edit Customer
+            Edit
           </Button>
         )}
 

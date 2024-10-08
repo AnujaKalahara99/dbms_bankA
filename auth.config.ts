@@ -9,21 +9,6 @@ export const authConfig = {
     // while this file is also used in non-Node.js environments
   ],
   callbacks: {
-    // jwt({ token, user }) {
-    //   if (user && user.email) {
-    //     token.data = getUser(user.email);
-    //   }
-    //   return token;
-    // },
-    // session: ({ session, token }) => {
-    //   return {
-    //     ...session,
-    //     user: {
-    //       ...session.user,
-    //       data: token.data,
-    //     },
-    //   };
-    // },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
@@ -35,5 +20,64 @@ export const authConfig = {
       }
       return true;
     },
+    async jwt({ token, user }) {
+      // Persist the user in the token after the first login
+      if (user) {
+        token.id = user.id;
+        token.email = user.Email;
+        token.name = user.Name;
+        token.isCustomer = user.Is_Customer;
+        token.isEmployee = user.Is_Employee;
+        token.isManager = user.Is_Manager;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      // Pass token info into the session object
+      session.user = {
+        ...session.user,
+        id: token.id as string,
+        email: token.email as string,
+        name: token.name as string,
+        isCustomer: token.isCustomer as boolean,
+        isEmployee: token.isEmployee as boolean,
+        isManager: token.isManager as boolean,
+      };
+
+      return session;
+    },
   },
 } satisfies NextAuthConfig;
+
+declare module "next-auth" {
+  interface User {
+    id?: string;
+    Name: string;
+    Email: string;
+    Password: string;
+    Is_Customer: boolean;
+    Is_Employee: boolean;
+    Is_Manager: boolean;
+  }
+
+  interface Session {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      isCustomer: boolean;
+      isEmployee: boolean;
+      isManager: boolean;
+    };
+  }
+
+  interface JWT {
+    id: string;
+    email: string;
+    name: string;
+    isCustomer: boolean;
+    isEmployee: boolean;
+    isManager: boolean;
+  }
+}

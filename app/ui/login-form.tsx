@@ -10,8 +10,11 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useActionState } from "react";
+import { useState } from "react";
 
 export default function LoginForm() {
+  const [userType, setUserType] = useState<"customer" | "employee">("customer");
+
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined
@@ -24,6 +27,38 @@ export default function LoginForm() {
           Please log in to continue.
         </h1>
         <div className="w-full">
+          <div>
+            <label
+              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              htmlFor="email"
+            >
+              Choose Type
+            </label>
+            <div className="flex justify-center mb-4 bg-white rounded-md border border-gray-100 text-gray-500 text-sm">
+              <button
+                type="button"
+                className={`w-1/2 px-4 py-2 rounded-l-md ${
+                  userType === "customer"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setUserType("customer")}
+              >
+                Customer
+              </button>
+              <button
+                type="button"
+                className={`w-1/2 px-4 py-2 rounded-r-md ${
+                  userType === "employee"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setUserType("employee")}
+              >
+                Employee
+              </button>
+            </div>
+          </div>
           <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"

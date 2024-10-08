@@ -2,11 +2,11 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import type { User } from "@/app/lib/definitions";
+// import type { User } from "@/app/lib/definitions";
 import { authConfig } from "./auth.config";
 import { connectToDatabase } from "./app/lib/mysql";
 
-export async function getUser(email: string): Promise<User | undefined> {
+export async function getUser(email: string) {
   try {
     const mysql = await connectToDatabase();
 
@@ -18,7 +18,6 @@ export async function getUser(email: string): Promise<User | undefined> {
     if (rows[0].length === 0) {
       rows = await mysql.query(`SELECT * FROM Employee WHERE email=?`, [email]);
       if (rows[0].length === 0) {
-        console.log();
         return undefined;
       }
       employee = true;
@@ -27,7 +26,7 @@ export async function getUser(email: string): Promise<User | undefined> {
 
     const userData = rows[0][0];
 
-    const user: User = {
+    const user = {
       id: customer ? userData.Customer_ID : userData.Employee_ID,
       Name: userData.Name,
       Email: userData.Email,
