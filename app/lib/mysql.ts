@@ -11,5 +11,7 @@ export const connectToDatabase = async (): Promise<Connection> => {
       database: process.env.MYSQL_DB,
     });
   }
+  if (connection) console.log("Connected to DB");
+
   return connection;
 };
