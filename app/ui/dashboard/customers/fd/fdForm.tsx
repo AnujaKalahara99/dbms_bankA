@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Account, FDPlan } from "@/app/lib/data";
 
-export default function FDForm() {
+export default function FDForm({ accounts, fdPlans }: { accounts: Account[], fdPlans: FDPlan[] }) {
   const [formData, setFormData] = useState({
-    accountId: '',
+    accountId:  accounts.length ? accounts[0].Account_ID : '',
     amount: '',
-    fdPlan: '6 Months',
+    fdPlan: fdPlans.length ? fdPlans[0].FD_Plan_ID : '',
     startDate: '',
   });
 
@@ -28,15 +29,21 @@ export default function FDForm() {
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-100 p-4 rounded-lg mt-4">
-      <div>
+<div>
         <label>Account ID</label>
-        <input
-          type="text"
+        <select
           value={formData.accountId}
           onChange={(e) => setFormData({ ...formData, accountId: e.target.value })}
           className="border p-2 rounded w-full"
-        />
+        >
+          {accounts.map((account) => (
+            <option key={account.Account_ID} value={account.Account_ID}>
+              {account.Account_ID} (Balance: {account.Balance})
+            </option>
+          ))}
+        </select>
       </div>
+      {/* Amount */}
       <div>
         <label>Amount</label>
         <input
@@ -53,8 +60,11 @@ export default function FDForm() {
           onChange={(e) => setFormData({ ...formData, fdPlan: e.target.value })}
           className="border p-2 rounded w-full"
         >
-          <option>6 Months</option>
-          <option>1 Year</option>
+          {fdPlans.map((plan) => (
+            <option key={plan.FD_Plan_ID} value={plan.FD_Plan_ID}>
+              {plan.Period_in_Months}
+            </option>
+          ))}
         </select>
       </div>
       <div>

@@ -198,7 +198,7 @@ export interface Account {
 
 export interface FDPlan {
   FD_Plan_ID: string;
-  Plan_Name: string;
+  Period_in_Months: string;
 }
 
 // Function to fetch user account details
@@ -206,10 +206,10 @@ export async function getUserAccounts(userId: string): Promise<Account[]> {
   try {
     const mysql = await connectToDatabase();
     const [rows] = await mysql.query(
-      `SELECT Account_ID, Balance FROM Accounts WHERE User_ID = ?`,
+      `SELECT Account_ID, Balance FROM Account WHERE Customer_ID = ?`,
       [userId]
     );
-    console.log('accounts', rows);
+    console.log('account', rows);
     const accounts = rows as Account[];
     return accounts;
   } catch (error) {
@@ -218,14 +218,22 @@ export async function getUserAccounts(userId: string): Promise<Account[]> {
   }
 }
 
+
 // Function to fetch FD plans
 export async function getFDPlans(): Promise<FDPlan[]> {
   try {
     const mysql = await connectToDatabase();
-    const [plans] = await mysql.query(
-      `SELECT FD_Plan_ID, Plan_Name FROM FD_Plans`
+
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT FD_Plan_ID , Period_in_Months FROM FD_Plan`
     );
-    return plans as FDPlan[];
+
+    const plans: FDPlan[] = rows.map((row) => ({
+      FD_Plan_ID: row.FD_Plan_ID,
+      Period_in_Months: row.Period_in_Months,
+    }));
+
+    return plans;
   } catch (error) {
     console.error('Error fetching FD plans:', error);
     throw new Error('Failed to fetch FD plans');
