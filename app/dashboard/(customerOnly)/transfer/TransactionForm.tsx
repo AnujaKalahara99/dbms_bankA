@@ -6,6 +6,7 @@ import { useState } from "react";
 export default function TransactionForm({allAccounts , branchesDetails} : {allAccounts : any[] , branchesDetails : any[]}) {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    const [passwordCheck , setPasswordCheck] = useState(false);
     
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault(); // prevent default form submission
@@ -30,84 +31,87 @@ export default function TransactionForm({allAccounts , branchesDetails} : {allAc
         } else {
           window.location.href = "./transfer/Failed";
         }
-        setLoading(false);
         console.log(success);
     }
     if(loading){ 
         return(
             <>
-                <h1>Loading...</h1>
+                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
+                    <div className="p-4 bg-white rounded-md shadow-md">
+                    <h1 className="text-2xl font-semibold text-blue-500">Loading...</h1>
+                    </div>
+                </div>
             </>
         )
     }else{ 
         return(
             <>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        {/* <h1>{JSON.stringify(allAccounts)}</h1> */}
-                        <h1>{errorMessage}</h1>
-                        <h1>Make a transaction</h1>
-                        <div>
-                            <label>
-                                Recipient's Acount Number
-                            </label>
-                            <div className="relative">
-                            <input  name="recipient_account" placeholder="       Enter Account Number"/>
-                            </div>
-                        </div>
-                        <div>
-                            <label>
-                                Amount
-                            </label>
-                            <div className="relative">
-                            <input name="amount" placeholder="       Enter Amount"/>
-                            </div>
-                        </div>
-                        <div>
-                            <label>
-                                Description
-                            </label>
-                            <div className="relative">
-                            <input name="description" placeholder="       Enter Description"/>
-                            </div>
-                        </div>
-                        <div>
-                            <label>
-                                Branch ID
-                            </label>
-                            <div className="relative">
-                                <select  name = "Branch">
-                                {branchesDetails.map((branch, index) => (
-                                    <option key={index} value={branch.Branch_ID}>
+                <div className="w-full rounded-md bg-gray-50 p-6">
+                    <form onSubmit={handleSubmit}>
+                        <div className="flex flex-col items-center">
+                            {/* <h1>{JSON.stringify(allAccounts)}</h1> */}
+                            {/* //Also algn this h1 in the middle */}
+                            <h1 className="text-blue-500 text-2xl font-semibold mb-4 ">Make a transaction</h1>
+                            <div>
+                                <label className="mt-4 mb-2">
+                                    Recipient's Acount Number
+                                </label>
+                                <div className="relative">
+                                    <input className="border border-gray-300 rounded-md px-2 py-1" name="recipient_account" placeholder="Enter Account Number" />
+                                </div>
+                                </div>
+                                <div>
+                                <label className="mt-4 mb-2">
+                                    Amount
+                                </label>
+                                <div className="relative">
+                                    <input className="border border-gray-300 rounded-md px-2 py-1" name="amount" placeholder="Enter Amount" />
+                                </div>
+                                </div>
+                                <div>
+                                <label className="mt-4 mb-2">
+                                    Description
+                                </label>
+                                <div className="relative">
+                                    <input className="border border-gray-300 rounded-md px-2 py-1" name="description" placeholder="Enter Description" />
+                                </div>
+                                </div>
+                                <div>
+                                <label className="mt-4 mb-2">
+                                    Branch ID
+                                </label>
+                                <div className="relative">
+                                    <select className="border border-gray-300 rounded-md px-2 py-1 w-full pr-8 appearance-none" name="Branch">
+                                    {branchesDetails.map((branch, index) => (
+                                        <option key={index} value={branch.Branch_ID}>
                                         {branch.Branch_ID}
-                                    </option>
-                                ))}
-                                </select>
-                                {/* <h1>{JSON.stringify(branchesDetails)}</h1> */}
-                            </div>
-                        </div>
-                        <div>
-                            <label>
-                                Branch ID
-                            </label>
-                        <div className="relative">
-                            {/* <h1>{JSON.stringify(allAccounts)}</h1>
-                            <h1>{JSON.stringify(allAccounts)}</h1> */}
-                            <select name="account">
-                                {allAccounts.map((account, index) => (
-                                    <option key={index} value={account.Account_ID}>
+                                        </option>
+                                    ))}
+                                    </select>
+                                </div>
+                                </div>
+                                <div>
+                                <label className="mt-4 mb-2">
+                                    Account
+                                </label>
+                                <div className="relative">
+                                    <select className="border border-gray-300 rounded-md px-2 py-1 w-full pr-8 appearance-none" name="account">
+                                    {allAccounts.map((account, index) => (
+                                        <option key={index} value={account.Account_ID}>
                                         {index + 1}. {account.Account_ID}
-                                    </option>
-                                ))}
-                            </select>
+                                        </option>
+                                    ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <p className="text-red-500 p-4">{errorMessage}</p>
+                            <Button type="submit" className="rounded-md bg-blue-500 px-4 py-2 text-white inline-block">
+                                Confirm
+                            </Button>
                         </div>
-                        </div>
-                        <Button type="submit" className="w-full">
-                            Log in
-                        </Button>
-                    </div>
-                    {/* <h1>{JSON.stringify(inputValues)}</h1> */}
-                </form>
+                        {/* <h1>{JSON.stringify(inputValues)}</h1> */}
+                    </form>
+                </div> 
             </>
         ); 
     }
