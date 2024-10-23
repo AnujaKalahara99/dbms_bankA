@@ -1,6 +1,6 @@
 "use client";
 
-import { FullCustomerDetails } from "@/app/lib/definitions";
+import { Branch, FullCustomerDetails, PlanType } from "@/app/lib/definitions";
 import {
   CheckIcon,
   ClockIcon,
@@ -9,8 +9,9 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
-import { useState } from "react";
-import { updateCustomer } from "@/app/lib/actions";
+import { useState, useEffect } from "react";
+import { updateCustomer, createAccount } from "@/app/lib/actions";
+import { fetchSAccountPlanTypes, fetchBranch} from "@/app/lib/data";
 
 export default function EditInvoiceForm({
   customer,
@@ -204,166 +205,6 @@ export default function EditInvoiceForm({
         )}
 
         {isEditing && <Button type="submit">Save Edits</Button>}
-      </div>
-    </form>
-  );
-}
-
-export function CreateAccountForm() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [accountType, setAccountType] = useState(''); // State for account type
-  const [planType, setPlanType] = useState(''); // State for plan type
-
-  const fields = [
-    {
-      Title: "Customer ID",
-      Type: "string",
-      ID: "customer_id",
-      Placeholder: "Enter Customer ID",
-      canEdit: false,
-    },
-    {
-      Title: "Balance",
-      Type: "number",
-      ID: "balance",
-      Placeholder: "Enter balance",
-      canEdit: true,
-    },
-    {
-      Title: "Account Type",
-      Type: "radio",
-      ID: "account_type",
-      Placeholder: "Enter Address Line 2",
-      canEdit: true,
-    },
-    {
-      Title: "Branch",
-      Type: "string",
-      ID: "Branch",
-      Placeholder: "Enter Branch ID",
-      canEdit: true,
-    }
-  ];
-
-  // Handle account type change
-  const handleAccountTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountType(event.target.value);
-    setPlanType(''); // Reset plan type when account type changes
-  };
-
-  // Handle plan type change
-  const handlePlanTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPlanType(event.target.value);
-  };
-
-  return (
-    <form
-  onSubmit={async (event) => {
-    event.preventDefault(); // Prevent page refresh
-
-    // Get references to the input elements
-    const customerIdElement = document.getElementById('customer_id') as HTMLInputElement | null;
-    const balanceElement = document.getElementById('balance') as HTMLInputElement | null;
-    const branchElement = document.getElementById('branch') as HTMLInputElement | null;
-
-    // Check if elements are not null and have values
-    const customer_id = customerIdElement ? customerIdElement.value : '';
-    const balance = balanceElement ? balanceElement.value : '';
-    const branch = branchElement ? branchElement.value : '';
-
-    // Validate that none of these fields are empty
-    if (!customer_id || !balance || !branch) {
-      // Handle the error: show a message, log, etc.
-      alert('Please fill in all required fields.');
-      return; // Prevent submission
-    }
-
-    const formData = {
-      customer_id,
-      balance,
-      branch,
-      account_type: accountType,
-      plan_type: accountType === 'saving' ? planType : undefined, // Include plan type only if saving
-    };// Call your update function
-    window.location.reload();
-  }}
->
-
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Customer Fields */}
-        {fields.map((field) => (
-          <div key={field.ID} className="mb-4">
-            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-              {field.Title}
-            </label>
-            <div className="relative mt-2 rounded-md">
-              <div className="relative">
-              {field.Type === "radio" ? (
-                  <>
-                    <label style={{ marginLeft: '20px', marginRight: '20px' }}>
-                      <input
-                        type="radio"
-                        name="account_type"
-                        value="current"
-                        checked={accountType === 'current'}
-                        onChange={handleAccountTypeChange}
-                      />
-                      Current
-                    </label>
-                    <label style={{ marginRight: '20px' }}>
-                      <input
-                        type="radio"
-                        name="account_type"
-                        value="saving"
-                        checked={accountType === 'saving'}
-                        onChange={handleAccountTypeChange}
-                      />
-                      Saving
-                    </label>
-
-                    {accountType === 'saving' && (
-                        <select value={planType} onChange={(e) => setPlanType(e.target.value)}>
-                          <option value="">Select Plan Type</option>
-                          <option value="Children">Children</option>
-                          <option value="Teen">Teen</option>
-                          <option value="Adult">Adult</option>
-                          <option value="Senior">Senior</option>
-                        </select>
-                    )}
-                  </>
-                ) : (
-                  <input
-                    id={field.ID}
-                    name={field.ID}
-                    type={field.Type}
-                    placeholder={field.Placeholder}
-                    className={`peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${
-                      !isEditing || !field.canEdit
-                        ? "bg-gray-100 border-gray-200"
-                        : "border-gray-300"
-                    }`}
-                  />
-                )}
-
-                {field.ID === "total_balance" && (
-                  <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Buttons */}
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/customers"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Back
-        </Link>
-
-        <Button type="submit">Create Account</Button>
       </div>
     </form>
   );
