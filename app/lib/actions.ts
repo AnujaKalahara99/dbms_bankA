@@ -15,6 +15,14 @@ const CustomerSchema = z.object({
   Email: z.string().email(), // Ensuring valid email format
 });
 
+const OnlineTransactionSchema = z.object({
+  sender_ID:z.string(),
+  reciever_ID:z.string(),
+  amount_ID: z.number(),
+  Description:z.string(),
+  Branch_ID:z.string()
+});
+
 // const UpdateCustomer = CustomerSchema.omit({ Customer_ID: true });
 
 export async function updateCustomer(formData: FormData) {
@@ -86,3 +94,10 @@ export async function authenticate(
     throw error;
   }
 }
+
+
+export async function OnlineTransfer(formData: FormData){  
+  
+}
+
+

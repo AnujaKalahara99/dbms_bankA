@@ -23,7 +23,7 @@ import {
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
 
-export async function fetchCustomerFull(customer_id: string) {
+export async function  fetchCustomerFull(customer_id: string) {
   try {
     const mysql = await connectToDatabase();
     console.log("customerRow");
@@ -151,5 +151,40 @@ LIMIT ? OFFSET ?
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch filtered Customers.");
+  }
+}
+
+//Fuction for get all branches ID and names from Branch table in MYSQL database
+export async function fetchAllBranches() {
+  try {
+    const mysql = await connectToDatabase();
+    console.log("customerRow");
+
+    const [branches]: [any[], any] = await mysql.query(
+      `SELECT Location , Branch_ID , Name
+      FROM branch;`,
+    );
+
+    return branches;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+//To fetch Details of Acounts - Select transcaction account
+export async function fetchAcountDetails(customer_id: string){ 
+  try{
+    const mysql = await connectToDatabase();
+
+    const [accounts] : [any[],any] = await mysql.query(
+      `SELECT Account_ID FROM account
+      WHERE CUSTOMER_ID = ?;`,
+      [customer_id]
+    );
+    return accounts ;
+  }catch(error) { 
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
   }
 }
