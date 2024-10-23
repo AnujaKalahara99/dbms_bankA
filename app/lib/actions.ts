@@ -4,6 +4,7 @@ import { z } from "zod";
 import { connectToDatabase } from "./mysql";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
+import { on } from "events";
 
 const CustomerSchema = z.object({
   Customer_ID: z.string(),
@@ -16,11 +17,12 @@ const CustomerSchema = z.object({
 });
 
 const OnlineTransactionSchema = z.object({
-  sender_ID:z.string(),
-  reciever_ID:z.string(),
-  amount_ID: z.number(),
+  senderAccount:z.string(),
+  recieverAccount:z.string(),
+  amount: z.number(),
   Description:z.string(),
-  Branch_ID:z.string()
+  Branch_ID:z.string() ,
+  Account:z.string()
 });
 
 // const UpdateCustomer = CustomerSchema.omit({ Customer_ID: true });
@@ -97,7 +99,32 @@ export async function authenticate(
 
 
 export async function OnlineTransfer(formData: FormData){  
-  
+  console.log(formData);
+  try{
+
+    const {senderAccount, recieverAccount, amount, Description, Branch_ID } = OnlineTransactionSchema.parse({
+      senderAccount:formData.get("account"),
+      recieverAccount:formData.get("recipient_account"),
+      amount:Number(formData.get("amount")),
+      Description:formData.get("description"),
+      Branch_ID:formData.get("Branch"),
+      Account:formData.get("account")
+    });
+
+    console.log(formData.get("description"));
+    const mysql = await connectToDatabase();
+    const transfer_Query = `call FundTransfer(? , ? , ? , ? , ?);`;
+    await mysql.query(transfer_Query , [
+      senderAccount,
+      recieverAccount,
+      amount,
+      Description,
+      Branch_ID
+    ]);
+
+    return true;
+  }catch(error){
+    console.log(error as string);
+    //return error as string ;
+  }
 }
-
-
