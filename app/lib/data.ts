@@ -2,7 +2,7 @@ import {
   Branch,
   ManualLoan,
   Customer,
-  Account,
+  Account as ImportedAccount,
   Loan,
   LoanInstallment,
   Transaction,
@@ -22,6 +22,9 @@ import {
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
+
+// Use the renamed import in the code where necessary
+// Example: const account: ImportedAccount = ...
 
 export async function fetchCustomerFull(customer_id: string) {
   try {
@@ -151,5 +154,80 @@ LIMIT ? OFFSET ?
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch filtered Customers.");
+  }
+}
+
+
+export async function fetchFDList(account_id: string) {
+  try {
+       
+    const mysql = await connectToDatabase();
+
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT FD_ID, Account_ID, Amount, Start_Date, FD_Plan_ID
+       FROM FD
+       WHERE Account_ID = ?`,
+      [account_id]
+    );
+
+    
+
+
+    const fdList: FD[] = rows.map((row) => ({
+      FD_ID: row.FD_ID,
+      Account_ID: row.Account_ID,
+      Amount: row.Amount,
+      Start_Date: row.Start_Date,
+      FD_Plan_ID: row.FD_Plan_ID,
+    }));
+
+    return fdList;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Fixed Deposits.");
+  }
+}
+
+
+
+// Define interfaces
+export interface Account {
+  Account_ID: string;
+  Balance: number;
+}
+
+export interface FDPlan {
+  FD_Plan_ID: string;
+  Plan_Name: string;
+}
+
+// Function to fetch user account details
+export async function getUserAccounts(userId: string): Promise<Account[]> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows] = await mysql.query(
+      `SELECT Account_ID, Balance FROM Accounts WHERE User_ID = ?`,
+      [userId]
+    );
+    console.log('accounts', rows);
+    const accounts = rows as Account[];
+    return accounts;
+  } catch (error) {
+    console.error('Error fetching user accounts:', error);
+    throw new Error('Failed to fetch user accounts');
+  }
+}
+
+// Function to fetch FD plans
+export async function getFDPlans(): Promise<FDPlan[]> {
+  try {
+    const mysql = await connectToDatabase();
+    const [plans] = await mysql.query(
+      `SELECT FD_Plan_ID, Plan_Name FROM FD_Plans`
+    );
+    return plans as FDPlan[];
+  } catch (error) {
+    console.error('Error fetching FD plans:', error);
+    throw new Error('Failed to fetch FD plans');
   }
 }
