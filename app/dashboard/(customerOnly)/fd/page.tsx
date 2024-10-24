@@ -29,8 +29,8 @@ export default async function FDPage() {
             <p>Account ID: {fd.Account_ID}</p>
             <p>Amount: {fd.Amount}</p>
             <p>Start Date: {fd.Start_Date.toISOString()}</p>
-            <button className="bg-blue-500 text-white px-2 py-1 rounded mt-2">Edit</button>
-            <button className="bg-red-500 text-white px-2 py-1 rounded mt-2">Close FD</button>
+            {/* <button className="bg-blue-500 text-white px-2 py-1 rounded mt-2">Edit</button>
+            <button className="bg-red-500 text-white px-2 py-1 rounded mt-2">Close FD</button> */}
           </div>
         ))
       ) : (
