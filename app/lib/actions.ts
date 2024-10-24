@@ -126,10 +126,18 @@ export async function createAccount(formData: FormData) {
       ]);
 
       console.log("Account created successfully!");
-    }catch (error) {
-      console.error("Database Error:", error);
-      throw new Error("Failed to Create Account.");
+      return { success: true };
+
+    }catch (error: unknown) {
+      // Check if error is an object and has a message property
+      if (typeof error === "object" && error !== null && "message" in error) {
+        const err = error as { message: string };
+        return { success: false, message: err.message || "Failed to Create Account." };
+      } else {
+        return { success: false, message: "An unknown error occurred." };
+      }
     }
+    
 
 }
 

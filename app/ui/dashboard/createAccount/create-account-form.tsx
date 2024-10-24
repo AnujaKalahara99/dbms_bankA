@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
-import { useState} from "react";
+import { useState, useActionState } from "react";
 import { createAccount } from "@/app/lib/actions";
 
 export function CreateAccountForm({
@@ -23,6 +23,8 @@ export function CreateAccountForm({
   const [accountType, setAccountType] = useState(''); // State for account type
   const [planType, setPlanType] = useState(''); // State for plan type
   const [branch, setBranch] = useState(''); // State for selected branch
+  const [error, setError] = useState(""); // State for error messages
+  const [success, setSuccess] = useState(""); // State for success messages
 
   const fields = [
     {
@@ -50,26 +52,53 @@ export function CreateAccountForm({
 
   // Handle account type change
   const handleAccountTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountType(event.target.value);
-    setPlanType(''); // Reset plan type when account type changes
+    const value = event.target.value;
+    if (value !== undefined) {
+      setAccountType(value); // Update selected plan type
+      setPlanType('');  // Reset plan type when account type changes
+    }
   };
 
   const handlePlanTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPlanType(event.target.value); // Update selected plan type
+    const value = event.target.value;
+    if (value !== undefined) {
+      setPlanType(value); // Update selected plan type
+    } // Update selected plan type
   };
 
   const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setBranch(event.target.value); // Update selected branch
-  };  
+    const value = event.target.value;
+    if (value !== undefined) {
+      setBranch(value); // Update selected branch
+    } // Update selected branch
+  };
+  
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent default form submission
+    setError(""); // Clear previous error
+    setSuccess(""); // Clear previous success message
+
+    const formData = new FormData(event.currentTarget);
+
+    // Call createAccount and handle response
+    const response = await createAccount(formData);
+    if (response.success) {
+      setSuccess("Account created successfully!"); // Set success message
+      window.location.reload(); // Optionally reload the page
+    } else {
+      setError(response.message || "An unknown error occurred."); // Set error message
+    }
+  };
+
 
   return (
-    <form
-    action={async (formData) => {
-        console.log(formData);
-        await createAccount(formData);
-        window.location.reload();
-      }}
-    >
+    <form onSubmit={handleSubmit}>
+      {/* Error message display */}
+      {error && (
+        <div className="mb-4 text-red-500 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
           <div key={"customer_id"} className="mb-4">
