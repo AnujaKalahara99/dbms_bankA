@@ -203,3 +203,21 @@ export async function fetchAllCustomers(){
     throw new Error("Failed to fetch Branches data.");
   }
 }
+
+export async function fetchCustomerAccounts(customer_id: string){
+  try{
+    const mysql = await connectToDatabase();
+
+    const [accounts] : [any[],any] = await mysql.query(
+      `SELECT Account_ID 
+        FROM account
+        WHERE customer_ID = ?;`,[customer_id]
+    );
+    //console.log(accounts);
+    return accounts ;
+  }catch(error) { 
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+
+}
