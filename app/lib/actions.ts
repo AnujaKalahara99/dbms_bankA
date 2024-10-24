@@ -146,17 +146,13 @@ export async function checkPassword(customer_id:string , password:string){
   return passwordsMatch;
 }
 
-export async function newManualLoan(formatData:FormData){ 
-
+export async function newManualLoan(amount: number, interest: number, duration: number, employee_id: string, accountID: string){
   const mysql = await connectToDatabase();
-  await mysql.query(`CALL insert_manual_loan(
-    10000.00,      -- p_Amount
-    5.0000,        -- p_Interest_Rate
-    12,            -- p_Duration
-    '5001',        -- p_Employee_ID
-    'B3F6R8L1'         -- p_Acount_ID
-    );`
+  await mysql.query(
+    `CALL insert_manual_loan(? , ? , ? , ? , ?);`,
+    [amount,interest,duration,employee_id,accountID]
   );
+  console.log(amount,interest,duration,employee_id,accountID);
 
 }
 

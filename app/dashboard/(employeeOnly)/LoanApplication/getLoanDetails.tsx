@@ -1,11 +1,13 @@
 "use client";
 import { newManualLoan } from "@/app/lib/actions";
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
 
 export default function getLoanDetails({customers , employee_id} : {customers : any[] , employee_id : string}) {
     const [customer_id , setCustomer_id] = useState("sdsa");
-    const [data, setData] = useState([{Account_ID : "Please Select Customer"}]);    
-    const [accounts , setAccounts] = useState();
+    const [data, setData] = useState([{Account_ID : "Please Select Customer"}]); 
+    const [CustomerName , setCustomerName] = useState("Please Select Email"); 
+    const [notfilled , setNotfilled] = useState(false);
+    const [complete , setComplete] = useState(false);
 
     const callServiceFunction = async (customer_ID : string) => {
         
@@ -21,47 +23,90 @@ export default function getLoanDetails({customers , employee_id} : {customers : 
             setData([{Account_ID : "Please Select Customer"}]);
         }
     };
+
+    const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const customerEmail = formData.get("customerEmail");
+        const accountID = formData.get("accountID");
+        const amount = formData.get("amount");
+        const interest = formData.get("interestRate");
+        const duration = formData.get("duration");
+
+        if(customerEmail === "" || amount === "" || interest === "" || duration === "" || accountID === null ){
+            setNotfilled(true);
+            return;
+        }
+        setNotfilled(false);
+        newManualLoan(Number(amount) , Number(interest) , Number(duration) , employee_id , String(accountID)); 
+        setComplete(true);
+        
+    }
     
-    return (
+    if(complete){
+        return (
+            <>
+                <h1>Complete - Implement this</h1>
+            </>
+        )
+    }else{
+        return (
         <div className="max-w-md mx-auto p-4 md:p-6 lg:p-8 bg-white rounded-lg shadow-md">
-            <div className="mb-4">
-                <label htmlFor="customer-id" className="block text-gray-700 text-sm font-bold mb-2">Customer ID</label>
-                <select id="customer-id" onChange={(e) => {
-                setCustomer_id(e.target.value);
-                callServiceFunction(e.target.value);
-                }} className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <option value="">Please Select Customer</option>
-                {customers.map((customer) => (
-                    <option key={customer.Customer_ID} value={customer.Customer_ID}>{customer.Customer_ID}</option>
-                ))}
-                </select>
-            </div>
-            {/* <h1 className="text-lg font-bold text-gray-900 mb-4 text-center">{customer_id}</h1> */}
-            <div className="mb-4">
-                <label htmlFor="account-id" className="block text-gray-700 text-sm font-bold mb-2">Account ID</label>
-                <select id="account-id" name="account-id" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                {data.map((account) => (
-                    <option key={account.Account_ID} value={account.Account_ID}>{account.Account_ID}</option>
-                ))}
-                </select>
-            </div>
-          
-            <div className="mb-4">
-                <label htmlFor="amount" className="block text-gray-700 text-sm font-bold mb-2">Amount</label>
-                <input id="amount" type="number" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-            </div>
-            <div className="mb-4">
-                <label htmlFor="interest-rate" className="block text-gray-700 text-sm font-bold mb-2">Interest Rate</label>
-                <input id="interest-rate" type="number" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-            </div>
-            <div className="mb-4">
-                <label htmlFor="employee-id" className="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
-               <input id="employee-id" type="text" value={employee_id} readOnly className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-            </div>
-            <div>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Apply</button>
-            </div>
+            <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                    <label htmlFor="customer-id" className="block text-gray-700 text-sm font-bold mb-2">Customer Email</label>
+                    <select name="customerEmail" id="customer-id" onChange={(e) => {
+                        setCustomer_id(e.target.value);
+                        setCustomerName(e.target.value !== "" ? customers.find((customer) => customer.Customer_ID === e.target.value)?.Name : "Please Select Email");
+                        callServiceFunction(e.target.value);
+                    }} className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Please Select Customer</option>
+                    {customers.map((customer) => (
+                        <option key={customer.Customer_ID} value={customer.Customer_ID}>{customer.Email}</option>
+                    ))}
+                    </select>
+                </div>
+                {/* <h1 className="text-lg font-bold text-gray-900 mb-4 text-center">{customer_id}</h1> */}
+                <div className="mb-4">
+                    <label htmlFor="employee-id" className="block text-gray-700 text-sm font-bold mb-2">Customer Name</label>
+                    <input name="customerName" id="employee-id" type="text" value={CustomerName} readOnly className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="accountID" className="block text-gray-700 text-sm font-bold mb-2">Account ID</label>
+                    <select id="account-id" name="accountID" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    {data.map((account) => (
+                        <option key={account.Account_ID} value={account.Account_ID}>{account.Account_ID}</option>
+                    ))}
+                    </select>
+                </div>
+            
+                <div className="mb-4">
+                    <label htmlFor="amount" className="block text-gray-700 text-sm font-bold mb-2">Amount</label>
+                    <input name="amount" id="amount" type="number" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="interest-rate" className="block text-gray-700 text-sm font-bold mb-2">Interest Rate</label>
+                    <input name="interestRate" id="interest-rate" type="number" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="duration" className="block text-gray-700 text-sm font-bold mb-2">Duration</label>
+                    <input type="number" name="duration" id="duration" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="employee-id" className="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
+                    <input name="employeeID" id="employee-id" type="text" value={employee_id} readOnly className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                <div>
+                    <p className="text-red-500 mb-4">{notfilled ? "Please fill out all fields" : ""}</p>
+                </div>
+                <div>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded">Apply</button>
+                </div>
+            </form>
+            
 
         </div>
-    );
+        );
+    }
+    
 }

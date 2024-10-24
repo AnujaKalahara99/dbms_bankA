@@ -195,7 +195,7 @@ export async function fetchAllCustomers(){
     const mysql = await connectToDatabase();
 
     const [customers] : [any[],any] = await mysql.query(
-      `SELECT Customer_ID FROM customer;`,
+      `SELECT Customer_ID , Email , Name  FROM customer;`,
     );
     return customers ;
   }catch(error) { 
