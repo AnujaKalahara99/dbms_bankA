@@ -190,12 +190,16 @@ export async function fetchAcountDetails(customer_id: string){
   }
 }
 
-export async function checkPassword(customer_id:string , password:string){
-  // const mysql = await connectToDatabase();
-  // const [rows] : [any[],any] = await mysql.query(`SELECT password FROM CUSTOMER WHERE Customer_ID = ?;;` , [customer_id]);
-  // console.log(rows[0]);
-  
-  // const passwordsMatch = await bcrypt.compare(password, rows[0].password);
+export async function fetchAllCustomers(){ 
+  try{
+    const mysql = await connectToDatabase();
 
-  return false;
+    const [customers] : [any[],any] = await mysql.query(
+      `SELECT Customer_ID FROM customer;`,
+    );
+    return customers ;
+  }catch(error) { 
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
 }
