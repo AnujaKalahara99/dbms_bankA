@@ -8,6 +8,12 @@ export const authConfig = {
     // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
     // while this file is also used in non-Node.js environments
   ],
+  session: {
+    // Set session maxAge (in seconds)
+    maxAge: 5 * 60, // 5 min
+    // How often to update the session token (in seconds)
+    updateAge: 5 * 60, // 5 min
+  },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;

@@ -26,7 +26,6 @@ import { connectToDatabase } from "./mysql";
 export async function fetchCustomerFull(customer_id: string) {
   try {
     const mysql = await connectToDatabase();
-    console.log("customerRow");
 
     const [rows]: [any[], any] = await mysql.query(
       `SELECT c.Customer_ID, c.Name, c.Address_Line_1, c.Address_Line_2, c.City, c.Phone_Number, 
@@ -40,8 +39,6 @@ export async function fetchCustomerFull(customer_id: string) {
     );
 
     const customerRow: any = rows[0];
-
-    console.log(customerRow);
 
     // Structure the data into the FullCustomerDetails interface
     const fullCustomerDetails: FullCustomerDetails = {

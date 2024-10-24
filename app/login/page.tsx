@@ -25,13 +25,13 @@ export default function LoginPage() {
           <div className="w-full py-2">
             <b>Employee Email</b>
             <p>
-              use <u>bob.brown@example.com</u> with password <i>employee</i>
+              use <u>bob.williams@bank.com</u> with password <i>employee</i>
             </p>
           </div>
           <div className="w-full py-2">
             <b>Manager Email</b>
             <p>
-              use <u>alice.green@example.com</u> with password <i>employee</i>
+              use <u>alice.johnson@bank.com</u> with password <i>employee</i>
             </p>
           </div>
         </div>
