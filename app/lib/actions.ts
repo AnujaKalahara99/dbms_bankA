@@ -5,6 +5,7 @@ import { connectToDatabase } from "./mysql";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { on } from "events";
+import bcrypt from "bcrypt";
 
 const CustomerSchema = z.object({
   Customer_ID: z.string(),
@@ -127,4 +128,20 @@ export async function OnlineTransfer(formData: FormData){
     console.log(error as string);
     //return error as string ;
   }
+}
+
+
+export async function checkPassword(customer_id:string , password:string){
+  //console.log(customer_id);
+  //console.log(password);
+  const mysql = await connectToDatabase();
+  const [rows] : [any[],any] = await mysql.query(`SELECT Password 
+                                                  FROM customer
+                                                  WHERE Customer_ID = ?;` , [customer_id]);
+  //console.log(rows[0].Password);
+  const passwordsMatch = await bcrypt.compare(password,rows[0].Password );
+  //console.log(passwordsMatch);
+  // const passwordsMatch = await bcrypt.compare(password, rows[0].password);
+
+  return passwordsMatch;
 }

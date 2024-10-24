@@ -20,7 +20,7 @@ export default async function Page() {
 
     return(
         <>
-            <TransactionForm branchesDetails={branchesDetails} allAccounts={allAccounts}></TransactionForm>
+            <TransactionForm customer_id={id} branchesDetails={branchesDetails} allAccounts={allAccounts}></TransactionForm>
         </>
     );
 }

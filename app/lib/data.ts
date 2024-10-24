@@ -22,6 +22,7 @@ import {
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
+import bcrypt from "bcrypt";
 
 export async function  fetchCustomerFull(customer_id: string) {
   try {
@@ -187,4 +188,14 @@ export async function fetchAcountDetails(customer_id: string){
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Branches data.");
   }
+}
+
+export async function checkPassword(customer_id:string , password:string){
+  // const mysql = await connectToDatabase();
+  // const [rows] : [any[],any] = await mysql.query(`SELECT password FROM CUSTOMER WHERE Customer_ID = ?;;` , [customer_id]);
+  // console.log(rows[0]);
+  
+  // const passwordsMatch = await bcrypt.compare(password, rows[0].password);
+
+  return false;
 }
