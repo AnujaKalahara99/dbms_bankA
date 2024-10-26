@@ -252,14 +252,33 @@ export async function getFDPlans(): Promise<FDPlan[]> {
 //   Branch_ID: number;
 // }
 
-// Function to fetch employee details
-export async function getEmployees(): Promise<Employee[]> {
+
+// Function to fetch employee details for a specific manager's branch
+export async function getEmployees(managerId: string): Promise<Employee[]> {
   try {
     const mysql = await connectToDatabase();
-    const [rows] = await mysql.query(
-      `SELECT   Name, Address_Line_1, Address_Line_2, City, Phone_Number, Email, NIC, Branch_ID FROM Employee`
+
+    // Fetch the branch ID associated with the manager
+    const [managerRows]: [any[], any] = await mysql.query(
+      `SELECT Branch_ID FROM Branch WHERE Manager_ID = ?`,
+      ["5001"]
     );
-    return rows as Employee[];
+
+    if (managerRows.length === 0) {
+      throw new Error('Manager not found');
+    }
+
+    const branchId = managerRows[0].Branch_ID;
+
+    // Fetch employees for the specific branch
+    const [employeeRows] = await mysql.query(
+      `SELECT Name, Address_Line_1, Address_Line_2, City, Phone_Number, Email, NIC, Branch_ID 
+       FROM Employee 
+       WHERE Branch_ID = ?`,
+      [branchId]
+    );
+
+    return employeeRows as Employee[];
   } catch (error) {
     console.error('Error fetching employee details:', error);
     throw new Error('Failed to fetch employee details');

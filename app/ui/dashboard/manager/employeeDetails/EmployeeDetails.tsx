@@ -15,7 +15,7 @@ export default function ManagerDashboard({ employees }: { employees: Employee[] 
             <th className="border px-4 py-2">Phone Number</th>
             <th className="border px-4 py-2">Email</th>
             <th className="border px-4 py-2">NIC</th>
-            <th className="border px-4 py-2">Branch ID</th>
+
           </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@ export default function ManagerDashboard({ employees }: { employees: Employee[] 
               <td className="border px-4 py-2">{employee.Phone_Number}</td>
               <td className="border px-4 py-2">{employee.Email}</td>
               <td className="border px-4 py-2">{employee.NIC}</td>
-              <td className="border px-4 py-2">{employee.Branch_ID}</td>
+
             </tr>
           ))}
         </tbody>
