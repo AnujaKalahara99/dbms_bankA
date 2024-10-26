@@ -19,6 +19,8 @@ import {
   CountResult,
   FilteredCustomer,
   FullCustomerDetails,
+  Transaction_Report,
+  LateLoan,
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -148,5 +150,102 @@ LIMIT ? OFFSET ?
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch filtered Customers.");
+  }
+}
+
+export async function fetchTransactionsByBranch(
+  branch_id: string
+): Promise<Transaction_Report[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT t.Transaction_ID, t.Source_Account_ID, t.Destination_Account_ID, 
+              t.Date_and_Time, t.Amount, t.Type, t.Branch_ID AS Transaction_Branch_ID,
+              sa.Branch_ID AS Source_Branch_ID, da.Branch_ID AS Destination_Branch_ID
+       FROM Transaction t 
+       JOIN Account sa ON t.Source_Account_ID = sa.Account_ID
+       JOIN Account da ON t.Destination_Account_ID = da.Account_ID
+       WHERE sa.Branch_ID = ? OR da.Branch_ID = ?`,
+      [branch_id, branch_id]
+    );
+
+    const transactionReports: Transaction_Report[] = rows.map((row) => {
+      const dateTime = new Date(row.Date_and_Time);
+
+      // Determine if the transaction is a credit or debit for the given branch
+      let credit = 0;
+      let debit = 0;
+
+      // If the destination branch is the current branch, it's a credit (money coming in)
+      if (row.Destination_Branch_ID === branch_id) {
+        credit = row.Amount;
+      }
+
+      // If the source branch is the current branch, it's a debit (money going out)
+      if (row.Source_Branch_ID === branch_id) {
+        debit = row.Amount;
+      }
+
+      return {
+        Date: dateTime, // Store as a Date object
+        Transaction_ID: row.Transaction_ID,
+        Source_Account_ID: row.Source_Account_ID,
+        Destination_Account_ID: row.Destination_Account_ID,
+        Type: row.Type, // Store the transaction type (e.g., transfer, withdrawal)
+        Credit: credit, // Credit will be 0 if the branch is the source branch
+        Debit: debit, // Debit will be 0 if the branch is the destination branch
+      };
+    });
+
+    return transactionReports;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch transactions for the branch.");
+  }
+}
+
+export async function fetchBranchIDfromEmployeeID(
+  employee_id: string
+): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows]: [any[], any[]] = await mysql.query(
+      "SELECT Branch_ID FROM Employee WHERE Employee_ID = ?",
+      [employee_id]
+    );
+    return rows[0].Branch_ID;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branch ID.");
+  }
+}
+
+export async function fetchLateLoansFromBranch(
+  branchId: string
+): Promise<LateLoan[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    // Execute stored procedure with Branch_ID as a parameter
+    const [rows]: [any[], any] = await mysql.query(
+      `CALL GetLateLoansFromBranch(?)`,
+      [branchId]
+    );
+
+    // Map rows to LateLoan objects
+    const lateLoans: LateLoan[] = rows[0].map((row: any) => ({
+      Loan_ID: row.Loan_ID,
+      Account_ID: row.Account_ID,
+      Customer_Name: row.Customer_Name,
+      Amount_Due: Number(row.Amount_Due),
+      Due_Date: new Date(row.Due_Date),
+      Days_Overdue: row.Days_Overdue,
+    }));
+
+    return lateLoans;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch late loans from branch.");
   }
 }

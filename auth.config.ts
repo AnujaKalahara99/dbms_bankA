@@ -10,7 +10,7 @@ export const authConfig = {
   ],
   session: {
     // Set session maxAge (in seconds)
-    maxAge: 5 * 60, // 5 min
+    maxAge: 60 * 60, // 1 hr
     // How often to update the session token (in seconds)
     updateAge: 5 * 60, // 5 min
   },

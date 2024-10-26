@@ -21,7 +21,12 @@ export async function getUser(email: string) {
         return undefined;
       }
       employee = true;
-      manager = rows[0][0].Is_Manager == 1 || rows[0][0].Is_Manager == true;
+      const rows2: [any[], any[]] = await mysql.query(
+        `SELECT Manager_ID FROM Branch WHERE Branch_ID=?`,
+        [rows[0][0].Branch_ID]
+      );
+      console.log(rows2);
+      manager = rows[0][0].Employee_ID == rows2[0][0].Manager_ID;
     } else customer = true;
 
     const userData = rows[0][0];

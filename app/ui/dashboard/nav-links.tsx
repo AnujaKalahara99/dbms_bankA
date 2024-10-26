@@ -8,6 +8,7 @@ import {
   SquaresPlusIcon,
   BanknotesIcon,
   CalculatorIcon,
+  ChartBarSquareIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -52,6 +53,18 @@ const links = [
     href: "/dashboard/customers",
     icon: UserGroupIcon,
     viewOnly: "employee",
+  },
+  {
+    name: "Branch Report",
+    href: "/dashboard/reports",
+    icon: ChartBarSquareIcon,
+    viewOnly: "manager",
+  },
+  {
+    name: "LateLoan Report",
+    href: "/dashboard/loanreport",
+    icon: ChartBarSquareIcon,
+    viewOnly: "manager",
   },
 ];
 

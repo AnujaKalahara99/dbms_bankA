@@ -1,7 +1,16 @@
 import BankALogo from "@/app/ui/bankA-logo";
 import LoginForm from "@/app/ui/login-form";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth();
+
+  // Redirect to the dashboard if the user is logged in
+  if (session?.user?.id) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="flex items-center justify-center h-screen flex-col md:flex-row">
       <div className="relative flex w-full h-full max-w-[400px] flex-col justify-center space-y-2.5 p-4">
@@ -25,7 +34,7 @@ export default function LoginPage() {
           <div className="w-full py-2">
             <b>Employee Email</b>
             <p>
-              use <u>bob.williams@bank.com</u> with password <i>employee</i>
+              use <u>mark.robinson@bank.com</u> with password <i>employee</i>
             </p>
           </div>
           <div className="w-full py-2">

@@ -80,6 +80,15 @@ export interface LoanInstallment {
   Loan_ID: string;
 }
 
+export interface LateLoan {
+  Loan_ID: string;
+  Account_ID: string;
+  Customer_Name: string;
+  Amount_Due: number;
+  Due_Date: Date;
+  Days_Overdue: number;
+}
+
 // Transaction
 export interface Transaction {
   Transaction_ID: string;
@@ -90,6 +99,16 @@ export interface Transaction {
   Amount: number;
   Type: string;
   Branch_ID: string;
+}
+
+export interface Transaction_Report {
+  Date: Date;
+  Transaction_ID: string;
+  Source_Account_ID: string;
+  Destination_Account_ID: string;
+  Type: string;
+  Credit: number;
+  Debit: number;
 }
 
 // Plan Type
