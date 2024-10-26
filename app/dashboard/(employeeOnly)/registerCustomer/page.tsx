@@ -10,7 +10,7 @@ export default async function Page() {
 
     return (
       <div>
-        <h1>Create Account</h1>
+        <h1>Register Customer</h1>
         <RegisterCustomerForm />
       </div>
     );

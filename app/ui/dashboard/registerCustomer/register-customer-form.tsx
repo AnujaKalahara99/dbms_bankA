@@ -10,15 +10,15 @@ import {
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { useState, useActionState } from "react";
-import { createAccount } from "@/app/lib/actions";
+import { createAccount, registerCustomer } from "@/app/lib/actions";
 
 export function RegisterCustomerForm() {
   const [customerType, setCustomerType] = useState('');
   const [dateInfo, setDateInfo] = useState("");
   const [identityNum, setIdentityNum] = useState(''); // State for account type 
-  const [branch, setBranch] = useState(''); // State for selected branch
   const [error, setError] = useState(""); // State for error messages
   const [success, setSuccess] = useState(""); // State for success messages
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const fields = [
     {
@@ -52,7 +52,7 @@ export function RegisterCustomerForm() {
         Title: "Phone Number",
         Type: "string",
         ID: "phone_number",
-        Placeholder: "Enter Address Line 1",
+        Placeholder: "Enter Phone Number",
         canEdit: true,
     },
     {
@@ -60,13 +60,6 @@ export function RegisterCustomerForm() {
         Type: "email",
         ID: "email",
         Placeholder: "Enter Email",
-        canEdit: true,
-    },
-    {
-        Title: "Password",
-        Type: "password",
-        ID: "password",
-        Placeholder: "Enter Password",
         canEdit: true,
     },
   ];
@@ -78,7 +71,10 @@ export function RegisterCustomerForm() {
     }
   };
 
-  
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(event.target.value);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission
     setError(""); // Clear previous error
@@ -91,10 +87,10 @@ export function RegisterCustomerForm() {
 
     const formData = new FormData(event.currentTarget);
 
-    // Call createAccount and handle response
-    const response = await createAccount(formData);
+    // Call registerCustomer and handle response
+    const response = await registerCustomer(formData);
     if (response.success) {
-      setSuccess("Account created successfully!"); // Set success message
+      setSuccess("Customer Regsitered successfully!"); // Set success message
       window.location.reload(); // Optionally reload the page
     } else {
       setError(response.message || "An unknown error occurred."); // Set error message
@@ -120,17 +116,32 @@ export function RegisterCustomerForm() {
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
+              {field.ID === 'phone_number' ? (
+                <>
+                  <input
+                    id={field.ID}
+                    name={field.ID}
+                    type="string" // Use "tel" for phone numbers
+                    placeholder={field.Placeholder}
+                    className="peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 border-gray-300"
+                    required={["name", "address_line_1", "city", "phone_number", "email", "password"].includes(field.ID)}
+                    onChange={handlePhoneChange}
+                  />
+                  {phoneNumber && phoneNumber.length !== 15 && (
+                    <p className="text-red-500 text-xs mt-1">Phone number must be exactly 10 digits.</p>
+                  )}
+                </>
+                ) : (
                 <input
                   id={field.ID}
                   name={field.ID}
                   type="string"
                   placeholder={field.Placeholder}
-                  className={`peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 border-gray-300`}
-                  required={[ "name", "address_line_1", "city", "phone_number", "email", "password" ].includes(field.ID)}
+                  className="peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 border-gray-300"
+                  required={["name", "address_line_1", "city", "phone_number", "email", "password"].includes(field.ID)}
                 />
-                {field.ID === "total_balance" && (
-                  <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                 )}
+
               </div>
             </div>
           </div>
@@ -173,7 +184,7 @@ export function RegisterCustomerForm() {
                 </label>
                 <input
                   id="dob"
-                  name="dob"
+                  name="date_info"
                   type="date"
                   value={dateInfo}
                   required
@@ -185,13 +196,16 @@ export function RegisterCustomerForm() {
                 </label>
                 <input
                   id="nic"
-                  name="nic"
+                  name="identity_num"
                   type="string"
                   value={identityNum}
                   required
                   onChange={(event) => setIdentityNum(event.target.value)}
                   className="peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 />
+                {identityNum && identityNum.length !== 10 && (
+                  <p className="text-red-500 text-xs mt-1">NIC must be exactly 10 characters.</p>
+                )}
               </div>
             )}
 
@@ -202,7 +216,7 @@ export function RegisterCustomerForm() {
                 </label>
                 <input
                   id="registration_date"
-                  name="registration_date"
+                  name="date_info"
                   type="date"
                   value={dateInfo}
                   required
@@ -214,20 +228,22 @@ export function RegisterCustomerForm() {
                 </label>
                 <input
                   id="brn"
-                  name="brn"
+                  name="identity_num"
                   type="string"
                   value={identityNum}
                   required
                   onChange={(event) => setIdentityNum(event.target.value)}
                   className="peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 />
+                {identityNum && identityNum.length !== 10 && (
+                  <p className="text-red-500 text-xs mt-1">Registration Number must be exactly 10 characters.</p>
+                )}
               </div>
             )}
 
         </div>
       </div>
 
-      {/* Buttons */}
       {/* Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
