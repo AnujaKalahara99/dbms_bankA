@@ -261,7 +261,7 @@ export async function getEmployees(managerId: string): Promise<Employee[]> {
     // Fetch the branch ID associated with the manager
     const [managerRows]: [any[], any] = await mysql.query(
       `SELECT Branch_ID FROM Branch WHERE Manager_ID = ?`,
-      ["5001"]
+      [managerId]
     );
 
     if (managerRows.length === 0) {
@@ -272,7 +272,7 @@ export async function getEmployees(managerId: string): Promise<Employee[]> {
 
     // Fetch employees for the specific branch
     const [employeeRows] = await mysql.query(
-      `SELECT Name, Address_Line_1, Address_Line_2, City, Phone_Number, Email, NIC, Branch_ID 
+      `SELECT Employee_ID, Name, Address_Line_1, Address_Line_2, City, Phone_Number, Email, NIC, Branch_ID 
        FROM Employee 
        WHERE Branch_ID = ?`,
       [branchId]
