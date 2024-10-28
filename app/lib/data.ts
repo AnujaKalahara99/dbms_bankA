@@ -238,36 +238,4 @@ export async function getFDPlans(): Promise<FDPlan[]> {
     console.error('Error fetching FD plans:', error);
     throw new Error('Failed to fetch FD plans');
   }
-<<<<<<< Updated upstream
 }
-=======
-}
-
-// export interface Employee {
-//   Employee_ID: string;
-//   Name: string;
-//   Address_Line_1: string;
-//   Address_Line_2: string | null;
-//   City: string;
-//   Phone_Number: string;
-//   Email: string;
-//   NIC: string;
-//   Branch_ID: number;
-// }
-
-// Function to fetch employee details
-export async function getEmployees(): Promise<Employee[]> {
-  try {
-    const mysql = await connectToDatabase();
-    const [rows] = await mysql.query(
-      `SELECT   * FROM Employee`
-    );
-    return rows as Employee[];
-  } catch (error) {
-    console.error('Error fetching employee details:', error);
-    throw new Error('Failed to fetch employee details');
-  }
-}
-
-export type { Employee };
->>>>>>> Stashed changes
