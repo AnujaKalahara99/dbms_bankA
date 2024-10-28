@@ -9,6 +9,7 @@ import {
   BanknotesIcon,
   CalculatorIcon,
   CurrencyDollarIcon,
+  ClockIcon ,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -59,6 +60,12 @@ const links = [
     name: "Loan Application",
     href: "/dashboard/LoanApplication",
     icon: CurrencyDollarIcon,
+    viewOnly: "employee",
+  },
+  {
+    name: "Pending Loans",
+    href: "/dashboard/PendingLoans", // i need to set loacation of pending loans wich is in Manageronly folder
+    icon: ClockIcon,
     viewOnly: "employee",
   },
 ];

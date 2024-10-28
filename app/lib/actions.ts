@@ -147,6 +147,7 @@ export async function checkPassword(customer_id:string , password:string){
 }
 
 export async function newManualLoan(amount: number, interest: number, duration: number, employee_id: string, accountID: string){
+  try{
   const mysql = await connectToDatabase();
   await mysql.query(
     `CALL insert_manual_loan(? , ? , ? , ? , ?);`,
@@ -154,5 +155,25 @@ export async function newManualLoan(amount: number, interest: number, duration: 
   );
   console.log(amount,interest,duration,employee_id,accountID);
 
+  }catch(error){
+    console.log(error);
+  }
+
 }
+
+export async function acceptManualLoan(Loan_ID: string , status: string){
+  try{
+    const mysql = await connectToDatabase();
+    await mysql.query(
+      `call banka.update_loan_status(?, ?);`,
+      [Loan_ID , status]
+    );
+    console.log(Loan_ID);
+  
+    }catch(error){
+      console.log(error);
+    }
+
+}
+  
 

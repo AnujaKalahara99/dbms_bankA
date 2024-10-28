@@ -221,3 +221,22 @@ export async function fetchCustomerAccounts(customer_id: string){
   }
 
 }
+
+export async function fetchPendingLoans(){
+  try{
+    const mysql = await connectToDatabase();
+
+    const [PendingLoans] : [any[],any] = await mysql.query(
+      `SELECT manual_loan.Loan_ID AS Loan_ID , Employee_ID , Amount , Interest_Rate ,  Duration_in_Months , Account_ID
+      FROM manual_loan INNER JOIN loan 
+      ON manual_loan.Loan_ID = loan.Loan_ID 
+      WHERE manual_loan.Status = 'Pending';`,
+    );
+    //console.log(accounts);
+    return PendingLoans ;
+  }catch(error) { 
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Pending Loans data.");
+  }
+
+}
