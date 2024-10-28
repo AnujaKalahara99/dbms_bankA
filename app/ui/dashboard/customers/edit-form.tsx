@@ -11,6 +11,8 @@ import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { useState } from "react";
 import { updateCustomer } from "@/app/lib/actions";
+import { fetchCustomerFull } from "@/app/lib/data";
+import PasswordModal from "./password-modal";
 
 export default function EditInvoiceForm({
   customer,
@@ -18,6 +20,15 @@ export default function EditInvoiceForm({
   customer: FullCustomerDetails;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  const handlePasswordVerification = () => {
+    setShowPasswordModal(true);
+  };
+
+  const handleVerifiedEdit = () => {
+    setIsEditing(true);
+  };
 
   const fields = [
     {
@@ -124,6 +135,26 @@ export default function EditInvoiceForm({
         ))}
       </div>
 
+      <div className="rounded-md bg-gray-50 p-4 md:p-6 mb-6">
+        <div className="mb-4">
+          <label
+            htmlFor="acc_number"
+            className="mb-2 block text-sm font-medium"
+          >
+            Password
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <Button
+              type="button"
+              disabled={isEditing}
+              onClick={handlePasswordVerification}
+            >
+              Change Password
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Vertical Space */}
       <div className="my-6"> Account Details </div>
 
@@ -205,6 +236,13 @@ export default function EditInvoiceForm({
 
         {isEditing && <Button type="submit">Save Edits</Button>}
       </div>
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <PasswordModal
+          onClose={() => setShowPasswordModal(false)}
+          onVerify={handleVerifiedEdit}
+        />
+      )}
     </form>
   );
 }

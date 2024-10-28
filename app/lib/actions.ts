@@ -40,8 +40,8 @@ export async function updateCustomer(formData: FormData) {
     const mysql = await connectToDatabase();
 
     const insertQuery = `
-    INSERT INTO Customer (Customer_ID, Name, Address_Line_1, Address_Line_2, City, Phone_Number, Email) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO Customer (Customer_ID, Name, Address_Line_1, Address_Line_2, City, Phone_Number, Email, Password) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, "0000")
     ON DUPLICATE KEY UPDATE
     Name = VALUES(Name),
     Address_Line_1 = VALUES(Address_Line_1),
@@ -67,6 +67,28 @@ export async function updateCustomer(formData: FormData) {
     throw new Error("Failed to Update Customer data.");
   }
 }
+
+// export async function updateCustomerPassword(customerId: string, newPassword: string) {
+//   try {
+//     // Hash the new password
+//     const hashedPassword = await hashPassword(newPassword);
+
+//     const mysql = await connectToDatabase();
+
+//     const updateQuery = `
+//       UPDATE Customer
+//       SET Password = ?
+//       WHERE Customer_ID = ?;
+//     `;
+
+//     await mysql.query(updateQuery, [hashedPassword, customerId]);
+
+//     console.log("Customer password updated successfully!");
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to Update Customer password.");
+//   }
+// }
 
 export async function authenticate(
   prevState: string | undefined,
