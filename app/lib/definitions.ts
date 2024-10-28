@@ -171,3 +171,14 @@ export interface Configurations {
 export interface CountResult {
   count: number;
 }
+
+
+export interface Loan_view {
+  Loan_ID: string;
+  Amount: number;
+  Interest_Rate: number;
+  Issued_Date: Date;
+  Duration_in_Months: number;
+  Account_ID: number;
+  Fixed_Deposit_ID: number | null;
+}

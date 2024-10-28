@@ -19,6 +19,7 @@ import {
   CountResult,
   FilteredCustomer,
   FullCustomerDetails,
+  Loan_view,
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -151,5 +152,34 @@ LIMIT ? OFFSET ?
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch filtered Customers.");
+  }
+}
+
+
+export async function fetchLoans(customer_id: string): Promise<Loan_view[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [rows] = await mysql.query(`
+      SELECT 
+        l.Loan_ID, 
+        l.Amount, 
+        l.Interest_Rate, 
+        l.Issued_Date, 
+        l.Duration_in_Months, 
+        l.Account_ID, 
+        ol.Fixed_Deposit_ID 
+      FROM loan l
+      LEFT JOIN online_loan ol ON l.Loan_ID = ol.Loan_ID
+      LEFT JOIN account a ON l.Account_ID=a.Account_ID
+      WHERE a.Customer_ID= ? 
+      
+    `,[customer_id]);
+
+      
+    return rows as Loan_view[];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch loans.');
   }
 }
