@@ -203,3 +203,20 @@ export interface Configurations {
 export interface CountResult {
   count: number;
 }
+
+export interface LocalTransaction {
+  Transaction_ID: string;
+  Source_Account_ID: string | null;
+  Destination_Account_ID: string | null;
+  Date_and_Time: string;
+  Amount: number;
+  Type:
+    | "Deposit"
+    | "Withdrawal"
+    | "Loan-Payment"
+    | "Interest-Rate"
+    | "Transfer"
+    | "FD"
+    | "Loan";
+  Description: string | null;
+}

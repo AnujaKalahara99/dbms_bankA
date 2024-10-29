@@ -25,6 +25,7 @@ import {
   LateLoan,
   Account_Branch,
   RecentTransaction,
+  LocalTransaction,
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -512,25 +513,6 @@ export async function fetchBranch() {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Customer data.");
   }
-}
-
-// data.ts
-
-export interface LocalTransaction {
-  Transaction_ID: string;
-  Source_Account_ID: string | null;
-  Destination_Account_ID: string | null;
-  Date_and_Time: string;
-  Amount: number;
-  Type:
-    | "Deposit"
-    | "Withdrawal"
-    | "Loan-Payment"
-    | "Interest-Rate"
-    | "Transfer"
-    | "FD"
-    | "Loan";
-  Description: string | null;
 }
 
 // Function to fetch transactions for a specific customer
