@@ -103,7 +103,7 @@ import {LoanResult} from "./definitions";
 
 export async function createLoan(Data: LoanResult) {
   try {
-   
+   console.log(Data);
     const mysql = await connectToDatabase();
 
     // Insert the loan into the 'loan' table

@@ -31,24 +31,24 @@ export default function CreateLoan({ fd }: { fd: FD_view[] }) {
   };
 
   const handleLoanAmountChange = (value: string) => {
+    if (value === '') {
+      setLoanAmount(0); // Reset to 0 when input is empty
+      return;
+    }
+  
     const selectedFD = fd.find(item => item.FD_ID === fixedDepositId);
-    // console.log(selectedFD.Amount);
     const maxLoanAmount = selectedFD ? selectedFD.Amount * 0.6 : 0; // 60% of FD amount
     const amount = parseFloat(value);
-
-    if (amount <= maxLoanAmount) {
-      setLoanAmount( amount);
+  
+    if (!isNaN(amount) && amount <= maxLoanAmount) {
+      setLoanAmount(amount); // Update state only if valid
     } else {
       alert(`Loan amount cannot exceed ${maxLoanAmount}`);
     }
   };
+  
 
-  // const handleDurationChange = (newDuration: number) => {
-  //   setDuration(newDuration);
-  //   const rate = newDuration === 6 ? 12 : 10; // 12% for 6 months, 10% for 12 months
-  //   setInterestRate(rate ); // Calculate interest
-  // };
-
+ 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -105,14 +105,14 @@ export default function CreateLoan({ fd }: { fd: FD_view[] }) {
           <button
             type="button"
             className={`flex-1 py-2 rounded-lg text-white ${duration === 6 ? 'bg-blue-500' : 'bg-gray-300'}`}
-            onClick={() => setInterestRate(6)}
+            onClick={() => setInterestRate(12)}
           >
             6 Months
           </button>
           <button
             type="button"
             className={`flex-1 py-2 rounded-lg text-white ${duration === 12 ? 'bg-blue-500' : 'bg-gray-300'}`}
-            onClick={() => setInterestRate(12)}
+            onClick={() => setInterestRate(10)}
           >
             12 Months
           </button>
