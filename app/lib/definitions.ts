@@ -137,7 +137,7 @@ export interface FD {
   Account_ID: string;
   Amount: number;
   Start_Date: Date;
-  Period: string;
+  FD_Plan_ID: string;
 }
 
 // Online Loan
