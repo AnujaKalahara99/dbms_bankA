@@ -1,11 +1,10 @@
 "use client";
 import { newManualLoan } from "@/app/lib/actions";
-import { inter } from "@/app/ui/fonts";
 import { FormEventHandler, useState } from "react";
-import { set } from "zod";
+import Image from 'next/image';
+import successImage from './images/successful.png';
 
 export default function getLoanDetails({customers , employee_id , interesetRates , minimumAmount} : {customers : any[] , employee_id : string , interesetRates : any , minimumAmount : number}) {
-    const [customer_id , setCustomer_id] = useState("sdsa");
     const [data, setData] = useState([{Account_ID : "Please Select Customer"}]); 
     const [CustomerName , setCustomerName] = useState("Please Select Email"); 
     const [notfilled , setNotfilled] = useState(false);
@@ -56,7 +55,18 @@ export default function getLoanDetails({customers , employee_id , interesetRates
     if(complete){
         return (
             <>
-                <h1>Complete - Implement this</h1>
+                <div >
+                    <div className="flex flex-col items-center bg-white pt-6 pb-6 w-full max-w-md mx-auto rounded-lg">
+                        <Image src={successImage} alt="Loan Application Success" width={200} height={200} className="rounded-full" />
+                        <h1 className="text-green-800">Loan Application Created Successfully</h1>
+                        <button 
+                            onClick={() => window.location.href = '/'} 
+                            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                            go to Home
+                        </button>
+                    </div>
+                </div>
             </>
         )
     }else{
