@@ -5,7 +5,7 @@ import {
   Account as ImportedAccount,
   Loan,
   LoanInstallment,
-  Transaction,
+  Transaction as ImportedTransaction,
   PlanType,
   SavingAccount,
   FDPeriod,
@@ -22,6 +22,7 @@ import {
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
+import { RowDataPacket } from "mysql2";
 
 // Use the renamed import in the code where necessary
 // Example: const account: ImportedAccount = ...
@@ -238,4 +239,32 @@ export async function getFDPlans(): Promise<FDPlan[]> {
     console.error('Error fetching FD plans:', error);
     throw new Error('Failed to fetch FD plans');
   }
+}
+
+// data.ts
+
+
+export interface LocalTransaction {
+  Transaction_ID: string;
+  Source_Account_ID: string | null;
+  Destination_Account_ID: string | null;
+  Date_and_Time: string;
+  Amount: number;
+  Type: "Deposit" | "Withdrawal" | "Loan-Payment" | "Interest-Rate" | "Transfer" | "FD" | "Loan";
+  Description: string | null;
+}
+
+// Function to fetch transactions for a specific customer
+export async function getTransactionsByCustomerId(customerId: string): Promise<LocalTransaction[]> {
+  const mysql = await connectToDatabase();
+
+  const [rows] = await mysql.query<RowDataPacket[]>(
+    `SELECT Transaction_ID, Source_Account_ID, Destination_Account_ID, Date_and_Time, Amount, Type, Description
+     FROM Transaction
+     WHERE Source_Account_ID = ? OR Destination_Account_ID = ? 
+     ORDER BY Date_and_Time DESC`,
+    [customerId, customerId]
+  );
+
+  return rows as LocalTransaction[];
 }
