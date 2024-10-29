@@ -182,3 +182,24 @@ export interface Loan_view {
   Account_ID: number;
   Fixed_Deposit_ID: number | null;
 }
+
+
+export interface FD_view {
+  FD_ID: string;
+  Amount: number;  
+  Account_ID: number;
+}
+
+export interface LoanResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface LoanResult {
+  Loan_ID:string;
+  Amount :number | null ;
+  Interest_Rate : number;
+  Duration_in_Months: number;
+  Account_ID: number;
+  Fixed_Deposit_ID: string;
+}

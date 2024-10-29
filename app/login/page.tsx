@@ -1,7 +1,7 @@
 import BankALogo from "@/app/ui/bankA-logo";
 import LoginForm from "@/app/ui/login-form";
 
-export default function LoginPage() {
+export default async function LoginPage() {
   return (
     <main className="flex items-center justify-center h-screen flex-col md:flex-row">
       <div className="relative flex w-full h-full max-w-[400px] flex-col justify-center space-y-2.5 p-4">

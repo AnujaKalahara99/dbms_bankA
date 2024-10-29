@@ -20,6 +20,7 @@ import {
   FilteredCustomer,
   FullCustomerDetails,
   Loan_view,
+  FD_view
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -161,20 +162,21 @@ export async function fetchLoans(customer_id: string): Promise<Loan_view[]> {
     const mysql = await connectToDatabase();
 
     const [rows] = await mysql.query(`
-      SELECT 
-        l.Loan_ID, 
-        l.Amount, 
-        l.Interest_Rate, 
-        l.Issued_Date, 
-        l.Duration_in_Months, 
-        l.Account_ID, 
-        ol.Fixed_Deposit_ID 
-      FROM loan l
-      LEFT JOIN online_loan ol ON l.Loan_ID = ol.Loan_ID
-      LEFT JOIN account a ON l.Account_ID=a.Account_ID
-      WHERE a.Customer_ID= ? 
       
-    `,[customer_id]);
+       select 
+       Loan_ID, 
+       loan.Amount, 
+       Interest_Rate, 
+       Issued_Date, 
+       Duration_in_Months, 
+       loan.Account_ID,
+       FD_ID
+       FROM loan
+       LEFT JOIN fd ON loan.Account_ID = fd.Account_ID
+       LEFT JOIN account ON loan.Account_ID = account.Account_ID
+       WHERE customer_id = ?;`,
+
+      [customer_id]);
 
       
     return rows as Loan_view[];
@@ -183,3 +185,36 @@ export async function fetchLoans(customer_id: string): Promise<Loan_view[]> {
     throw new Error('Failed to fetch loans.');
   }
 }
+
+
+
+
+
+
+
+
+export async function getFD(customer_id: string): Promise<FD_view[]> {
+  try {
+    const mysql = await connectToDatabase(); // Establish DB connection
+
+    const [rows] = await mysql.query(
+      `
+      SELECT 
+        FD_ID,
+        f.Account_ID,
+        Amount
+      FROM fd f
+      LEFT JOIN Account a ON f.Account_ID = a.Account_ID 
+      WHERE a.Customer_ID = ?`, 
+    
+      [customer_id]
+    );
+
+    return rows as FD_view[];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch fd.');
+    
+  }
+}
+
