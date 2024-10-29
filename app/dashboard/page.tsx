@@ -1,9 +1,18 @@
-import { fetchCustomersCount } from "@/app/lib/data";
+import {
+  fetchCustomersCount,
+  fetchRecentTransactionsByCustomer,
+} from "@/app/lib/data";
 import { lusitana } from "../ui/fonts";
 import { Card } from "../ui/dashboard/cards";
+import RecentTransactionsTable from "../ui/dashboard/transactions/transaction-table";
+import { auth } from "@/auth";
 
-export default async function Page() {
-  const customerCount = await fetchCustomersCount();
+export default async function DashboardPage() {
+  const session = await auth();
+  const id = session?.user?.id;
+
+  const recentTransactions = await fetchRecentTransactionsByCustomer(id!);
+  // const customerCount = await fetchCustomersCount();
 
   return (
     <main>
@@ -11,14 +20,26 @@ export default async function Page() {
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* <Card title="Collected" value={totalPaidInvoices} type="collected" /> */}
-        {/* <Card title="Pending" value={totalPendingInvoices} type="pending" /> */}
-        {/* <Card title="Total Invoices" value={numberOfInvoices} type="invoices" /> */}
-        <Card title="Total Customers" value={customerCount} type="customers" />
+        <Card title="Your Name" value={"customerCount"} type="customers" />
+        <Card title="Accounts" value={"numberOfInvoices"} type="invoices" />
+        <Card
+          title="Pending FDs"
+          value={"totalPendingInvoices"}
+          type="pending"
+        />
+        <Card
+          title="Total Balance"
+          value={"totalPaidInvoices"}
+          type="collected"
+        />
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        {/* <RevenueChart revenue={revenue}  /> */}
-        {/* <LatestInvoices latestInvoices={latestInvoices} /> */}
+      <div className="mt-10">
+        <h1 className={`${lusitana.className} mb-8 text-gray-400 text-center`}>
+          Recent Transactions
+        </h1>
+        <div className="w-full min-h-40">
+          <RecentTransactionsTable transactions={recentTransactions} />
+        </div>
       </div>
     </main>
   );

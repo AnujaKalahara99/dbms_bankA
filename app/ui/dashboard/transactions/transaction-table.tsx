@@ -1,19 +1,19 @@
 import Image from "next/image";
 import { lusitana } from "@/app/ui/fonts";
 import Search from "@/app/ui/search";
-import { Transaction } from "@/app/lib/definitions";
+import { RecentTransaction, Transaction } from "@/app/lib/definitions";
 
-export default async function TransactionsTable({
+export default async function RecentTransactionsTable({
   transactions,
 }: {
-  transactions: Transaction[];
+  transactions: RecentTransaction[];
 }) {
   return (
     <div className="w-full">
-      <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
+      {/* <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
         Transactions
-      </h1>
-      <Search placeholder="Search transactions..." />
+      </h1> */}
+      {/* <Search placeholder="Search transactions..." /> */}
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
@@ -61,7 +61,7 @@ export default async function TransactionsTable({
                     <div className="pt-4 text-sm">
                       <p>Amount: ${transaction.Amount}</p>
                       <p>Type: {transaction.Type}</p>
-                      <p>Branch: {transaction.Branch_ID}</p>
+                      {/* <p>Branch: {transaction.Branch_ID}</p> */}
                     </div>
                   </div>
                 ))}
@@ -88,12 +88,12 @@ export default async function TransactionsTable({
                     <th scope="col" className="px-3 py-5 font-medium">
                       Type
                     </th>
-                    <th scope="col" className="px-3 py-5 font-medium">
+                    {/* <th scope="col" className="px-3 py-5 font-medium">
                       Branch
-                    </th>
-                    <th scope="col" className="relative py-3 pl-6 pr-3">
+                    </th> */}
+                    {/* <th scope="col" className="relative py-3 pl-6 pr-3">
                       <span className="sr-only">Edit</span>
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
 
@@ -107,10 +107,22 @@ export default async function TransactionsTable({
                         {transaction.Date.toLocaleDateString()} at{" "}
                         {transaction.Time}
                       </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                      <td
+                        className={`whitespace-nowrap bg-white px-4 py-5 text-sm ${
+                          transaction.belongsToCustomer == "source"
+                            ? "text-blue-400"
+                            : ""
+                        }`}
+                      >
                         {transaction.Source_Account_ID}
                       </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                      <td
+                        className={`whitespace-nowrap bg-white px-4 py-5 text-sm ${
+                          transaction.belongsToCustomer == "source"
+                            ? "text-blue-400"
+                            : ""
+                        }`}
+                      >
                         {transaction.Destination_Account_ID}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
@@ -119,14 +131,14 @@ export default async function TransactionsTable({
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {transaction.Type}
                       </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+                      {/* <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {transaction.Branch_ID}
-                      </td>
-                      <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      </td> */}
+                      {/* <td className="whitespace-nowrap py-3 pl-6 pr-3">
                         <div className="flex justify-end gap-3">
-                          {/* Add any update button or delete button here if needed */}
+                          Add any update button or delete button here if needed
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>

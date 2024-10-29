@@ -60,6 +60,15 @@ export interface Account {
   Customer_ID: string;
 }
 
+export interface Account_Branch {
+  Customer_ID: string;
+  Customer_Name: string;
+  Account_ID: string;
+  Balance: number;
+  Branch_Name: string;
+  Branch_ID: string;
+}
+
 // Loan
 export interface Loan {
   Loan_ID: string;
@@ -178,6 +187,10 @@ export interface Organization {
   Customer_ID: string;
   Registration_Number: number;
   Registration_Date: Date;
+}
+
+export interface RecentTransaction extends Transaction {
+  belongsToCustomer: "source" | "destination" | "both";
 }
 
 // Configurations (Singleton table, can define as constants or separate interface)

@@ -23,6 +23,8 @@ import {
   FullCustomerDetails,
   Transaction_Report,
   LateLoan,
+  Account_Branch,
+  RecentTransaction,
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -70,6 +72,31 @@ export async function fetchCustomerFull(customer_id: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Customer data.");
+  }
+}
+
+export async function fetchAllAccounts(
+  customer_id: string
+): Promise<Account_Branch[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT c.Customer_ID, c.Name as Customer_Name, a.Account_ID, a.Balance, a.Branch_ID, b.Name AS Branch_Name
+      FROM Account a
+      JOIN Customer c ON a.Customer_ID = c.Customer_ID
+      JOIN Branch b ON a.Branch_ID = b.Branch_ID
+      WHERE a.Customer_ID = ?;`,
+      [customer_id]
+    );
+
+    // Structure data into a list of accounts
+    const accounts = rows as Account_Branch[];
+
+    return accounts;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch accounts data.");
   }
 }
 
@@ -278,7 +305,67 @@ export async function getEmployees(managerId: string): Promise<Employee[]> {
   }
 }
 
-export type { Employee };
+// export type { Employee };
+export async function fetchRecentTransactionsByCustomer(
+  customer_id: string
+): Promise<RecentTransaction[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    // Step 1: Get all accounts for the specified customer
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT Account_ID FROM Account WHERE Customer_ID = ?`,
+      [customer_id]
+    );
+
+    const accountRows = rows as Account[];
+    const accountIds = accountRows.map((row) => row.Account_ID);
+
+    if (accountIds.length === 0) {
+      return []; // No accounts for this customer
+    }
+
+    // Step 2: Fetch the five most recent transactions for the customer’s accounts
+    const [transactionRows]: [any[], any] = await mysql.query(
+      `SELECT t.Transaction_ID, t.Source_Account_ID, t.Destination_Account_ID, 
+              t.Date_and_Time, t.Amount, t.Type, t.Branch_ID
+       FROM Transaction t
+       WHERE t.Source_Account_ID IN (?) OR t.Destination_Account_ID IN (?)
+       ORDER BY t.Date_and_Time DESC
+       LIMIT 5`,
+      [accountIds, accountIds]
+    );
+
+    // Step 3: Map each row to a CustomerTransaction object with belongsToCustomer
+    const transactions: RecentTransaction[] = transactionRows.map((row) => {
+      const dateTime = new Date(row.Date_and_Time);
+      const belongsToCustomer =
+        accountIds.includes(row.Source_Account_ID) &&
+        accountIds.includes(row.Destination_Account_ID)
+          ? "both"
+          : accountIds.includes(row.Source_Account_ID)
+          ? "source"
+          : "destination";
+
+      return {
+        Transaction_ID: row.Transaction_ID,
+        Source_Account_ID: row.Source_Account_ID,
+        Destination_Account_ID: row.Destination_Account_ID,
+        Date: dateTime,
+        Time: dateTime.toLocaleTimeString(), // assuming Date_and_Time is "YYYY-MM-DD HH:MM:SS"
+        Amount: row.Amount,
+        Type: row.Type,
+        Branch_ID: row.Branch_ID,
+        belongsToCustomer: belongsToCustomer,
+      };
+    });
+
+    return transactions;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch recent transactions for the customer.");
+  }
+}
 
 export async function fetchTransactionsByBranch(
   branch_id: string
