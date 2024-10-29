@@ -1,13 +1,17 @@
 "use client";
 import { newManualLoan } from "@/app/lib/actions";
+import { inter } from "@/app/ui/fonts";
 import { FormEventHandler, useState } from "react";
+import { set } from "zod";
 
-export default function getLoanDetails({customers , employee_id} : {customers : any[] , employee_id : string}) {
+export default function getLoanDetails({customers , employee_id , interesetRates , minimumAmount} : {customers : any[] , employee_id : string , interesetRates : any , minimumAmount : number}) {
     const [customer_id , setCustomer_id] = useState("sdsa");
     const [data, setData] = useState([{Account_ID : "Please Select Customer"}]); 
     const [CustomerName , setCustomerName] = useState("Please Select Email"); 
     const [notfilled , setNotfilled] = useState(false);
     const [complete , setComplete] = useState(false);
+    const [duration , setDuration] = useState(6);
+    const [wrongAmount , setWrongAmount] = useState(false);
 
     const callServiceFunction = async (customer_ID : string) => {
         
@@ -37,6 +41,11 @@ export default function getLoanDetails({customers , employee_id} : {customers : 
             setNotfilled(true);
             return;
         }
+        if(Number(amount) < minimumAmount){
+            setWrongAmount(true);
+            return;
+        }
+        setWrongAmount(false);
         setNotfilled(false);
         newManualLoan(Number(amount) , Number(interest) , Number(duration) , employee_id , String(accountID)); 
         setComplete(true);
@@ -84,14 +93,23 @@ export default function getLoanDetails({customers , employee_id} : {customers : 
                     <label htmlFor="amount" className="block text-gray-700 text-sm font-bold mb-2">Amount</label>
                     <input name="amount" id="amount" type="number" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="interest-rate" className="block text-gray-700 text-sm font-bold mb-2">Interest Rate</label>
-                    <input name="interestRate" id="interest-rate" type="number" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                <div>
+                    <p className="text-red-500 mb-4">{wrongAmount ? "Minimum amount is 50000" : ""}</p>
                 </div>
                 <div className="mb-4">
                     <label htmlFor="duration" className="block text-gray-700 text-sm font-bold mb-2">Duration</label>
-                    <input type="number" name="duration" id="duration" className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                    <select name="duration" id="duration" onChange={(e) => setDuration(Number(e.target.value))} className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value={6}>6 Months</option>
+                        <option value={12}>12 Months</option>
+                        <option value={18}>18 Months</option>
+                        <option value={24}>24 Months</option>
+                    </select>
                 </div>
+                <div className="mb-4">
+                    <label htmlFor="interest-rate" className="block text-gray-700 text-sm font-bold mb-2">Interest Rate</label>
+                    <input type="text" name="interestRate" value={interesetRates[duration]} readOnly className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+                
                 <div className="mb-4">
                     <label htmlFor="employee-id" className="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
                     <input name="employeeID" id="employee-id" type="text" value={employee_id} readOnly className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
