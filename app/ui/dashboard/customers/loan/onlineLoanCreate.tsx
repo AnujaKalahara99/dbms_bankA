@@ -64,7 +64,7 @@ export default function CreateLoan({ fd }: { fd: FD_view[] }) {
 
     // Replace this with actual backend logic if needed
     await createLoan(loanData);
-    alert('Loan successfully created!');
+    alert(' Loan successfully created! ');
   };
 
   return (
