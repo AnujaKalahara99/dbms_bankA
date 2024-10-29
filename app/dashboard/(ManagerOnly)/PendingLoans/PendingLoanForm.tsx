@@ -23,8 +23,8 @@ export default function pendingLoanForm({ pendingLoans }: { pendingLoans: any[] 
     }else{
             return (
             <>
-                <div className="p-6 bg-gray-100 rounded-lg max-w-4xl mx-auto">
-                        <table className="min-w-full bg-white">
+                <div className="p-6 bg-gray-100 bg-opacity-50 rounded-lg w-full h-full">
+                        <table className="min-w-full bg-transparent">
                             <thead>
                                 <tr>
                                     <th className="py-2 px-4 border-b text-left font-bold">Loan ID</th>
@@ -43,7 +43,7 @@ export default function pendingLoanForm({ pendingLoans }: { pendingLoans: any[] 
                                         <td className="py-2 px-4 border-b text-left">{pendingLoan.Employee_ID}</td>
                                         <td className="py-2 px-4 border-b text-left">{pendingLoan.Account_ID}</td>
                                         <td className="py-2 px-4 border-b text-left">{pendingLoan.Amount}</td>
-                                        <td className="py-2 px-4 border-b text-left">{pendingLoan.Interest_Rate}</td>
+                                        <td className="py-2 px-4 border-b text-left">{Number(pendingLoan.Interest_Rate).toFixed(2)}</td>
                                         <td className="py-2 px-4 border-b text-left">{pendingLoan.Duration_in_Months}</td>
                                         <td className="py-2 px-4 border-b text-left">
                                             <div className="flex space-x-2">

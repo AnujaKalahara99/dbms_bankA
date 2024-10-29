@@ -4,7 +4,7 @@ export default function PendingLoanProfile(PendingLoanProfile: any) {
     const profile = PendingLoanProfile["PlayerProfile"];
     return (
         <>
-            <form className="p-6 bg-gray-100 rounded-lg max-w-lg mx-auto">
+            <form className="p-6 bg-gray-100 rounded-lg max-w-lg mx-auto opacity-85">
                 <div className="space-y-4">
                     <div>
                         <label htmlFor="" className="block font-bold mb-1">Loan ID</label>
@@ -45,7 +45,7 @@ export default function PendingLoanProfile(PendingLoanProfile: any) {
                         </button>
                         <button 
                             type="button" 
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                             onClick={() => {
                                 acceptManualLoan(profile.Loan_ID, "Reject")
                                 window.location.href = "/dashboard/Success"
