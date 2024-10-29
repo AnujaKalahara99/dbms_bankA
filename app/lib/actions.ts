@@ -17,6 +17,18 @@ const CustomerSchema = z.object({
   Email: z.string().email(), // Ensuring valid email format
 });
 
+const CusRegSchema = z.object({
+  Name: z.string(),
+  Address_Line_1: z.string(),
+  Address_Line_2: z.string().nullable(), // Allowing null values
+  City: z.string(),
+  Phone_Number: z.string(),
+  Email: z.string().email(), // Ensuring valid email format
+  IdentityNum: z.string(),
+  DateInfo: z.string(),
+  Customer_Type: z.string(),
+});
+
 const AccountSchema = z.object({
   Customer_ID: z.string(),
   Balance: z.number(),
