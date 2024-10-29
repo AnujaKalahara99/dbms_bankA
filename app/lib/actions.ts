@@ -4,6 +4,8 @@ import { z } from "zod";
 import { connectToDatabase } from "./mysql";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
+import { on } from "events";
+import bcrypt from "bcrypt";
 
 const CustomerSchema = z.object({
   Customer_ID: z.string(),
@@ -21,6 +23,15 @@ const AccountSchema = z.object({
   Account_Type: z.string(),
   Branch: z.string(),
   Plan_Type: z.string().nullable(),
+});
+
+const OnlineTransactionSchema = z.object({
+  senderAccount: z.string(),
+  recieverAccount: z.string(),
+  amount: z.number(),
+  Description: z.string(),
+  Branch_ID: z.string(),
+  Account: z.string(),
 });
 
 // const UpdateCustomer = CustomerSchema.omit({ Customer_ID: true });
@@ -240,5 +251,89 @@ export async function createAccount(formData: FormData) {
     } else {
       return { success: false, message: "An unknown error occurred." };
     }
+  }
+}
+
+export async function OnlineTransfer(formData: FormData) {
+  console.log(formData);
+  try {
+    const { senderAccount, recieverAccount, amount, Description, Branch_ID } =
+      OnlineTransactionSchema.parse({
+        senderAccount: formData.get("account"),
+        recieverAccount: formData.get("recipient_account"),
+        amount: Number(formData.get("amount")),
+        Description: formData.get("description"),
+        Branch_ID: formData.get("Branch"),
+        Account: formData.get("account"),
+      });
+
+    console.log(formData.get("description"));
+    const mysql = await connectToDatabase();
+    const transfer_Query = `call FundTransfer(? , ? , ? , ? , ?);`;
+    await mysql.query(transfer_Query, [
+      senderAccount,
+      recieverAccount,
+      amount,
+      Description,
+      Branch_ID,
+    ]);
+
+    return true;
+  } catch (error) {
+    console.log(error as string);
+    //return error as string ;
+  }
+}
+
+export async function checkPassword(customer_id: string, password: string) {
+  //console.log(customer_id);
+  //console.log(password);
+  const mysql = await connectToDatabase();
+  const [rows]: [any[], any] = await mysql.query(
+    `SELECT Password 
+                                                  FROM customer
+                                                  WHERE Customer_ID = ?;`,
+    [customer_id]
+  );
+  //console.log(rows[0].Password);
+  const passwordsMatch = await bcrypt.compare(password, rows[0].Password);
+  //console.log(passwordsMatch);
+  // const passwordsMatch = await bcrypt.compare(password, rows[0].password);
+
+  return passwordsMatch;
+}
+
+export async function newManualLoan(
+  amount: number,
+  interest: number,
+  duration: number,
+  employee_id: string,
+  accountID: string
+) {
+  try {
+    const mysql = await connectToDatabase();
+    await mysql.query(`CALL insert_manual_loan(? , ? , ? , ? , ?);`, [
+      amount,
+      interest,
+      duration,
+      employee_id,
+      accountID,
+    ]);
+    console.log(amount, interest, duration, employee_id, accountID);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function acceptManualLoan(Loan_ID: string, status: string) {
+  try {
+    const mysql = await connectToDatabase();
+    await mysql.query(`call banka.update_loan_status(?, ?);`, [
+      Loan_ID,
+      status,
+    ]);
+    console.log(Loan_ID);
+  } catch (error) {
+    console.log(error);
   }
 }

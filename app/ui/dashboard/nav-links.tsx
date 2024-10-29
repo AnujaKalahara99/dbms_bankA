@@ -11,6 +11,8 @@ import {
   ChartBarSquareIcon,
   ClipboardIcon,
   ClipboardDocumentIcon,
+  CurrencyDollarIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,6 +46,7 @@ const links = [
     icon: CalculatorIcon,
     viewOnly: "customer",
   },
+
   {
     name: "Transactions",
     href: "/dashboard/transactions",
@@ -86,6 +89,18 @@ const links = [
     icon: ClipboardDocumentIcon,
     viewOnly: "customer",
   },
+  {
+    name: "Loan Application",
+    href: "/dashboard/LoanApplication",
+    icon: CurrencyDollarIcon,
+    viewOnly: "employee",
+  },
+  {
+    name: "Pending Loans",
+    href: "/dashboard/PendingLoans", // i need to set loacation of pending loans wich is in Manageronly folder
+    icon: ClockIcon,
+    viewOnly: "employee",
+  },
 ];
 
 export default function NavLinks({ user }: { user: any }) {
@@ -104,19 +119,22 @@ export default function NavLinks({ user }: { user: any }) {
           (user.isManager && link.viewOnly === "manager");
         return (
           view && (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={clsx(
-                "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
-                {
-                  "bg-sky-100 text-blue-600": pathname === link.href,
-                }
-              )}
-            >
-              <LinkIcon className="w-6" />
-              <p className="hidden md:block">{link.name}</p>
-            </Link>
+            <div key={link.name}>
+              <Link
+                href={link.href}
+                className={clsx(
+                  "flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
+                  {
+                    "bg-sky-100 text-blue-600": pathname === link.href,
+                  }
+                )}
+                style={{ backgroundColor: "transparent" }}
+              >
+                <LinkIcon className="w-6" />
+                <p className="hidden md:block">{link.name}</p>
+              </Link>
+              <hr className="border-t-[1.5px] border-gray-200 my-2" />
+            </div>
           )
         );
       })}

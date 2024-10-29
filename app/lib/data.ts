@@ -33,6 +33,7 @@ import { RowDataPacket } from "mysql2";
 
 // Use the renamed import in the code where necessary
 // Example: const account: ImportedAccount = ...
+import bcrypt from "bcrypt";
 
 export async function fetchCustomerFull(customer_id: string) {
   try {
@@ -535,5 +536,90 @@ export async function getTransactionsByCustomerId(
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Customer data.");
+  }
+}
+
+//Fuction for get all branches ID and names from Branch table in MYSQL database
+export async function fetchAllBranches() {
+  try {
+    const mysql = await connectToDatabase();
+    console.log("customerRow");
+
+    const [branches]: [any[], any] = await mysql.query(
+      `SELECT Location , Branch_ID , Name
+      FROM branch;`
+    );
+
+    return branches;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+//To fetch Details of Acounts - Select transcaction account
+export async function fetchAcountDetails(customer_id: string) {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [accounts]: [any[], any] = await mysql.query(
+      `SELECT Account_ID FROM account
+      WHERE CUSTOMER_ID = ?;`,
+      [customer_id]
+    );
+    return accounts;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+export async function fetchAllCustomers() {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [customers]: [any[], any] = await mysql.query(
+      `SELECT Customer_ID , Email , Name  FROM customer;`
+    );
+    return customers;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+export async function fetchCustomerAccounts(customer_id: string) {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [accounts]: [any[], any] = await mysql.query(
+      `SELECT Account_ID 
+        FROM account
+        WHERE customer_ID = ?;`,
+      [customer_id]
+    );
+    //console.log(accounts);
+    return accounts;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+export async function fetchPendingLoans() {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [PendingLoans]: [any[], any] = await mysql.query(
+      `SELECT manual_loan.Loan_ID AS Loan_ID , Employee_ID , Amount , Interest_Rate ,  Duration_in_Months , Account_ID
+      FROM manual_loan INNER JOIN loan 
+      ON manual_loan.Loan_ID = loan.Loan_ID 
+      WHERE manual_loan.Status = 'Pending';`
+    );
+    //console.log(accounts);
+    return PendingLoans;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Pending Loans data.");
   }
 }
