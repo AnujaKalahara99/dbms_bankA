@@ -26,6 +26,8 @@ import {
   Account_Branch,
   RecentTransaction,
   LocalTransaction,
+  EmployeeTransaction,
+  
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -538,6 +540,68 @@ export async function getTransactionsByCustomerId(
     throw new Error("Failed to fetch Customer data.");
   }
 }
+
+// Function to fetch transactions for a specific customer
+// export async function getTransactionsByEmployeeId(
+//   Employee_ID: string
+// ): Promise<EmployeeTransaction[]> {
+//   try {
+//     const mysql = await connectToDatabase();
+
+//     const [rows]: [any[], any] = await mysql.query(
+//       `SELECT t.Transaction_ID, t.Source_Account_ID, t.Destination_Account_ID, t.Date_and_Time, Amount, t.Type, t.Description , t.Branch_ID
+//      FROM Transaction t
+//      ORDER BY Date_and_Time DESC`
+//     );
+
+//     return rows as EmployeeTransaction[];
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch Customer data.");
+//   }
+// }
+
+// data.ts
+
+
+// Function to fetch transactions for a specific employee’s branch
+export async function getTransactionsByEmployeeId(
+  employeeId: string
+): Promise<EmployeeTransaction[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    // Retrieve the branch ID for the given employee
+    const [employeeRow]: any[] = await mysql.query(
+      `SELECT Branch_ID FROM Employee WHERE Employee_ID = ?`,
+      [employeeId]
+    );
+
+    const employeeBranchId = employeeRow[0]?.Branch_ID;
+
+    if (!employeeBranchId) {
+      throw new Error("Employee branch ID not found.");
+    }
+
+    // Fetch transactions only if the source or destination account belongs to the employee's branch
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT t.Transaction_ID, t.Source_Account_ID, t.Destination_Account_ID, t.Date_and_Time, t.Amount, t.Type, t.Description, t.Branch_ID
+       FROM Transaction t
+       WHERE 
+         (t.Source_Account_ID IN (SELECT Account_ID FROM Account WHERE Branch_ID = ?) 
+          OR 
+         t.Destination_Account_ID IN (SELECT Account_ID FROM Account WHERE Branch_ID = ?))
+       ORDER BY t.Date_and_Time DESC`,
+      [employeeBranchId, employeeBranchId]
+    );
+
+    return rows as EmployeeTransaction[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch transactions for employee's branch.");
+  }
+}
+
 
 //Fuction for get all branches ID and names from Branch table in MYSQL database
 export async function fetchAllBranches() {

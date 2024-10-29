@@ -220,3 +220,21 @@ export interface LocalTransaction {
     | "Loan";
   Description: string | null;
 }
+
+export interface EmployeeTransaction {
+  Transaction_ID: string;
+  Source_Account_ID: string | null;
+  Destination_Account_ID: string | null;
+  Date_and_Time: string;
+  Amount: number;
+  Type:
+    | "Deposit"
+    | "Withdrawal"
+    | "Loan-Payment"
+    | "Interest-Rate"
+    | "Transfer"
+    | "FD"
+    | "Loan";
+  Description: string | null;
+  Branch_ID: string;
+}
