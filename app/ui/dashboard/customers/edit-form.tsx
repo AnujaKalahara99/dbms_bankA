@@ -1,6 +1,6 @@
 "use client";
 
-import { FullCustomerDetails } from "@/app/lib/definitions";
+import { Branch, FullCustomerDetails, PlanType } from "@/app/lib/definitions";
 import {
   CheckIcon,
   ClockIcon,
@@ -9,8 +9,9 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
-import { useState } from "react";
-import { updateCustomer } from "@/app/lib/actions";
+import { useState, useEffect } from "react";
+import { updateCustomer, createAccount } from "@/app/lib/actions";
+import { fetchSAccountPlanTypes, fetchBranch } from "@/app/lib/data";
 import { fetchCustomerFull } from "@/app/lib/data";
 import PasswordModal from "./password-modal";
 

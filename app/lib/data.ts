@@ -30,6 +30,7 @@ import { connectToDatabase } from "./mysql";
 export async function fetchCustomerFull(customer_id: string) {
   try {
     const mysql = await connectToDatabase();
+    // console.log("customerRow");
 
     const [rows]: [any[], any] = await mysql.query(
       `SELECT c.Customer_ID, c.Name, c.Address_Line_1, c.Address_Line_2, c.City, c.Phone_Number, 
@@ -249,5 +250,54 @@ export async function fetchLateLoansFromBranch(
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch late loans from branch.");
+  }
+}
+export async function fetchSAccountPlanTypes() {
+  try {
+    const mysql = await connectToDatabase();
+    //console.log("customerRow");
+
+    const [rows]: [any, any] = await mysql.query(
+      `SELECT Plan_id, Plan_name, interest_rate from Plan_Type`
+    );
+
+    // Structure the data into the FullCustomerDetails interface
+    const PlanTypes: PlanType[] = rows.map((row: any) => ({
+      Plan_ID: row.Plan_id,
+      Plan_Name: row.Plan_name,
+      Interest_Rate: row.interest_rate,
+    }));
+
+    // const PlanTypes = rows as PlanType[];
+
+    return PlanTypes;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer data.");
+  }
+}
+
+export async function fetchBranch() {
+  try {
+    const mysql = await connectToDatabase();
+    //console.log("customerRow");
+
+    const [rows]: [any, any] = await mysql.query(
+      `SELECT Name, Location, Branch_ID from Branch`
+    );
+
+    //console.log(customerRow);
+
+    // Structure the data into the FullCustomerDetails interface
+    const Branches: Branch[] = rows.map((row: any) => ({
+      Name: row.Name,
+      Location: row.Location,
+      Branch_ID: row.Branch_ID,
+    }));
+
+    return Branches;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer data.");
   }
 }
