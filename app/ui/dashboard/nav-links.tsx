@@ -51,6 +51,12 @@ const links = [
     viewOnly: "employee",
   },
   {
+    name: "Transactions",
+    href: "/dashboard/transactions_c",
+    icon: DocumentDuplicateIcon,
+    viewOnly: "customer",
+  },
+  {
     name: "Customers",
     href: "/dashboard/customers",
     icon: UserGroupIcon,

@@ -519,15 +519,21 @@ export async function fetchBranch() {
 export async function getTransactionsByCustomerId(
   customerId: string
 ): Promise<LocalTransaction[]> {
-  const mysql = await connectToDatabase();
+  try {
+    const mysql = await connectToDatabase();
 
-  const [rows] = await mysql.query<RowDataPacket[]>(
-    `SELECT Transaction_ID, Source_Account_ID, Destination_Account_ID, Date_and_Time, Amount, Type, Description
-     FROM Transaction
-     WHERE Source_Account_ID = ? OR Destination_Account_ID = ? 
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT t.Transaction_ID, t.Source_Account_ID, t.Destination_Account_ID, t.Date_and_Time, Amount, t.Type, t.Description
+     FROM Transaction t
+     JOIN Account a ON t.Source_Account_ID = a.Account_ID OR t.Destination_Account_ID = a.Account_ID 
+     WHERE a.Customer_ID = ?
      ORDER BY Date_and_Time DESC`,
-    [customerId, customerId]
-  );
+      [customerId]
+    );
 
-  return rows as LocalTransaction[];
+    return rows as LocalTransaction[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer data.");
+  }
 }
