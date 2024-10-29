@@ -76,7 +76,6 @@ export default function getLoanDetails({customers , employee_id , interesetRates
                     <div className="mb-4 bg-white rounded-lg opacity-85 p-6">
                     <label htmlFor="customer-id" className="block text-gray-700 text-sm font-bold mb-2">Customer Email</label>
                     <select name="customerEmail" id="customer-id" onChange={(e) => {
-                        setCustomer_id(e.target.value);
                         setCustomerName(e.target.value !== "" ? customers.find((customer) => customer.Customer_ID === e.target.value)?.Name : "Please Select Email");
                         callServiceFunction(e.target.value);
                     }} className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
