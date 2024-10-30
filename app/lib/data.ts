@@ -89,8 +89,8 @@ export async function fetchCustomerFull(customer_id: string) {
       `SELECT c.Customer_ID, c.Name, c.Address_Line_1, c.Address_Line_2, c.City, c.Phone_Number, 
             c.Email, a.Account_ID, a.Balance, a.Branch_ID, b.Name as Branch_Name
       FROM customer c 
-      JOIN Account a ON a.Customer_ID = c.Customer_ID 
-      JOIN Branch b ON a.Branch_ID = b.Branch_ID 
+      LEFT JOIN Account a ON a.Customer_ID = c.Customer_ID 
+      LEFT JOIN Branch b ON a.Branch_ID = b.Branch_ID 
       WHERE c.Customer_ID = ?;`,
       [customer_id]
     );

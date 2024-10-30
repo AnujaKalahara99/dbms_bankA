@@ -385,10 +385,7 @@ export async function newManualLoan(
 export async function acceptManualLoan(Loan_ID: string, status: string) {
   try {
     const mysql = await connectToDatabase();
-    await mysql.query(`call banka.update_loan_status(?, ?);`, [
-      Loan_ID,
-      status,
-    ]);
+    await mysql.query(`call update_loan_status(?, ?);`, [Loan_ID, status]);
     console.log(Loan_ID);
   } catch (error) {
     console.log(error);

@@ -131,7 +131,7 @@ export function RegisterCustomerForm() {
                       ].includes(field.ID)}
                       onChange={handlePhoneChange}
                     />
-                    {phoneNumber && phoneNumber.length !== 15 && (
+                    {phoneNumber && phoneNumber.length !== 10 && (
                       <p className="text-red-500 text-xs mt-1">
                         Phone number must be exactly 10 digits.
                       </p>
