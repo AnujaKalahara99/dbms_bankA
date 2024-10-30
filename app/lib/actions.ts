@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { connectToDatabase } from "./mysql";
+import { LoanResult } from "./definitions";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { on } from "events";
@@ -44,6 +45,17 @@ const OnlineTransactionSchema = z.object({
   Description: z.string(),
   Branch_ID: z.string(),
   Account: z.string(),
+});
+const LoanSchema = z.object({
+  Loan_ID: z.string().nonempty("Loan ID is required."),
+  Amount: z.number().positive("Amount must be a positive number."),
+  Interest_Rate: z.number().nonnegative("Interest Rate cannot be negative."),
+  Duration_in_Months: z
+    .number()
+    .int()
+    .positive("Duration must be a positive integer."),
+  Account_ID: z.string().nonempty("Account ID is required."),
+  Fixed_Deposit_ID: z.string().optional(), // Optional, if it may not always be present
 });
 
 // const UpdateCustomer = CustomerSchema.omit({ Customer_ID: true });
@@ -227,6 +239,40 @@ export async function authenticate(
   }
 }
 
+export async function createLoan(Data: LoanResult) {
+  try {
+    console.log(Data);
+    const mysql = await connectToDatabase();
+
+    // Insert the loan into the 'loan' table
+    const loanQuery = `
+      INSERT INTO loan (Loan_ID, Amount, Interest_Rate, Issued_Date, Duration_in_Months, Status, Account_ID)
+      VALUES (?, ?, ?, NOW(), ?, 'Active', ?)
+    `;
+
+    await mysql.query(loanQuery, [
+      Data.Loan_ID,
+      Data.Amount,
+      Data.Interest_Rate,
+      Data.Duration_in_Months,
+      Data.Account_ID,
+    ]);
+
+    // Insert into the 'online_loan' table (mapping with fixed deposit)
+    const onlineLoanQuery = `
+      INSERT INTO online_loan (Loan_ID, Fixed_Deposit_ID) VALUES (?, ?)
+    `;
+
+    await mysql.query(onlineLoanQuery, [Data.Loan_ID, Data.Fixed_Deposit_ID]);
+
+    console.log("Loan created successfully!");
+    return { success: true, message: "Loan created successfully." };
+  } catch (error) {
+    console.error("Error creating loan:", error);
+    throw new Error("Failed to create loan. Please try again later.");
+  }
+}
+
 export async function createAccount(formData: FormData) {
   try {
     const { Customer_ID, Balance, Account_Type, Branch, Plan_Type } =
@@ -302,9 +348,7 @@ export async function checkPassword(customer_id: string, password: string) {
   //console.log(password);
   const mysql = await connectToDatabase();
   const [rows]: [any[], any] = await mysql.query(
-    `SELECT Password 
-                                                  FROM customer
-                                                  WHERE Customer_ID = ?;`,
+    `SELECT Password FROM customer WHERE Customer_ID = ?;`,
     [customer_id]
   );
   //console.log(rows[0].Password);

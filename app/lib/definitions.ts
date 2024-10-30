@@ -238,3 +238,33 @@ export interface EmployeeTransaction {
   Description: string | null;
   Branch_ID: string;
 }
+
+export interface Loan_view {
+  Loan_ID: string;
+  Amount: number;
+  Interest_Rate: number;
+  Issued_Date: Date;
+  Duration_in_Months: number;
+  Account_ID: number;
+  Fixed_Deposit_ID: string;
+}
+
+export interface FD_view {
+  FD_ID: string;
+  Amount: number;
+  Account_ID: number;
+}
+
+export interface LoanResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface LoanResult {
+  Loan_ID: string;
+  Amount: number;
+  Interest_Rate: number;
+  Duration_in_Months: number;
+  Account_ID: number;
+  Fixed_Deposit_ID: string;
+}

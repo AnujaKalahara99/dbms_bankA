@@ -96,6 +96,18 @@ const links = [
     viewOnly: "manager",
   },
   {
+    name: "Online Loan",
+    href: "/dashboard/onlineLoan/view_loan",
+    icon: ClockIcon,
+    viewOnly: "customer",
+  },
+  {
+    name: "Create Online Loan",
+    href: "/dashboard/onlineLoan/create_loan",
+    icon: ClockIcon,
+    viewOnly: "customer",
+  },
+  {
     name: "FD List",
     href: "/dashboard/fd",
     icon: ClipboardIcon,

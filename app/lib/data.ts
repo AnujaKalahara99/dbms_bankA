@@ -27,7 +27,8 @@ import {
   RecentTransaction,
   LocalTransaction,
   EmployeeTransaction,
-  
+  Loan_view,
+  FD_view,
 } from "./definitions";
 // import { formatCurrency } from './utils';
 import { connectToDatabase } from "./mysql";
@@ -719,7 +720,6 @@ export async function getTransactionsByCustomerId(
 
 // data.ts
 
-
 // Function to fetch transactions for a specific employee’s branch
 export async function getTransactionsByEmployeeId(
   employeeId: string
@@ -757,7 +757,6 @@ export async function getTransactionsByEmployeeId(
     throw new Error("Failed to fetch transactions for employee's branch.");
   }
 }
-
 
 //Fuction for get all branches ID and names from Branch table in MYSQL database
 export async function fetchAllBranches() {
@@ -841,5 +840,60 @@ export async function fetchPendingLoans() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Pending Loans data.");
+  }
+}
+
+export async function fetchLoans(customer_id: string): Promise<Loan_view[]> {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [rows] = await mysql.query(
+      `
+      
+       select 
+       loan.Loan_ID, 
+       loan.Amount, 
+       Interest_Rate, 
+       Issued_Date, 
+       Duration_in_Months, 
+       loan.Account_ID,
+       Fixed_Deposit_ID
+       FROM loan
+       LEFT JOIN account ON loan.Account_ID = account.Account_ID
+       LEFT JOIN online_loan ON loan.Loan_ID = online_loan.Loan_ID
+       
+       WHERE account.customer_id = ?;`,
+
+      [customer_id]
+    );
+
+    return rows as Loan_view[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch loans.");
+  }
+}
+
+export async function getFD(customer_id: string): Promise<FD_view[]> {
+  try {
+    const mysql = await connectToDatabase(); // Establish DB connection
+
+    const [rows] = await mysql.query(
+      `
+      SELECT 
+        FD_ID,
+        f.Account_ID,
+        Amount
+      FROM fd f
+      LEFT JOIN Account a ON f.Account_ID = a.Account_ID 
+      WHERE a.Customer_ID = ?`,
+
+      [customer_id]
+    );
+
+    return rows as FD_view[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch fd.");
   }
 }

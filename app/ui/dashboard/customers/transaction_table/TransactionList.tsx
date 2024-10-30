@@ -21,16 +21,21 @@
 // ui/dashboard/transactions/TransactionList.tsx
 import { LocalTransaction } from "@/app/lib/definitions";
 import TransactionItem from "./TransactionItem";
-
+import { lusitana } from "@/app/ui/fonts";
 
 interface TransactionListProps {
   transactions: LocalTransaction[];
 }
 
-export default function TransactionList({ transactions }: TransactionListProps) {
+export default function TransactionList({
+  transactions,
+}: TransactionListProps) {
   return (
     <div className="transaction-list">
-      <h2 className="text-xl font-bold mb-4">Transactions</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Transactions</h2> */}
+      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+        Transactions
+      </h1>
       <table className="w-full table-auto border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -45,7 +50,10 @@ export default function TransactionList({ transactions }: TransactionListProps) 
         </thead>
         <tbody>
           {transactions.map((transaction) => (
-            <TransactionItem key={transaction.Transaction_ID} transaction={transaction} />
+            <TransactionItem
+              key={transaction.Transaction_ID}
+              transaction={transaction}
+            />
           ))}
         </tbody>
       </table>
