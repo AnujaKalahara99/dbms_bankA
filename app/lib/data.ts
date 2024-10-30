@@ -110,7 +110,7 @@ export async function fetchCustomerFull(customer_id: string) {
       Email: customerRow.Email,
       Total_Balance: rows.reduce((sum, account) => sum + account.Balance, 0), // Sum all balances
       Accounts: rows.map((row) => ({
-        Account_ID: row.Account_ID,
+        Account_ID: row.Account_ID ?? "",
         Balance: row.Balance,
         Branch_ID: row.Branch_ID,
         Branch_Name: row.Branch_Name,
@@ -287,7 +287,7 @@ export async function fetchCustomersFiltered(
     const mysql = await connectToDatabase();
 
     const sqlQuery = `
-      SELECT
+    SELECT
     GROUP_CONCAT(a.Account_ID) AS Account_IDs,
     c.Customer_ID,
     c.Name,
@@ -295,10 +295,10 @@ export async function fetchCustomersFiltered(
     c.Email,
     c.City,
     c.Phone_Number
-FROM 
-    Account a
-JOIN 
-    Customer c ON a.Customer_ID = c.Customer_ID
+FROM
+    Customer c
+LEFT JOIN
+    Account a ON a.Customer_ID = c.Customer_ID
 WHERE
     (? = '' OR LOWER(a.Account_ID) LIKE LOWER(?)) OR
     (? = '' OR LOWER(c.Customer_ID) LIKE LOWER(?)) OR
@@ -308,9 +308,9 @@ WHERE
     (? = '' OR LOWER(c.Address_Line_2) LIKE LOWER(?)) OR
     (? = '' OR LOWER(c.City) LIKE LOWER(?)) OR
     (? = '' OR LOWER(c.Phone_Number) LIKE LOWER(?))
-GROUP BY 
+GROUP BY
     c.Customer_ID, c.Name, c.Email, c.City, c.Phone_Number
-ORDER BY 
+ORDER BY
     c.Customer_ID DESC
 LIMIT ? OFFSET ?
     `;
@@ -349,15 +349,60 @@ LIMIT ? OFFSET ?
   }
 }
 
-export async function fetchFDList(account_id: string) {
+// export async function fetchCustomersFiltered(
+//   query: string,
+//   currentPage: number
+// ) {
+//   try {
+//     const mysql = await connectToDatabase();
+
+//     const sqlQuery = `
+//       SELECT
+//     GROUP_CONCAT(a.Account_ID) AS Account_IDs,
+//     c.Customer_ID,
+//     c.Name,
+//     SUM(a.Balance) AS Total_Balance,
+//     c.Email,
+//     c.City,
+//     c.Phone_Number
+// FROM
+//     Account a
+// JOIN
+//     Customer c ON a.Customer_ID = c.Customer_ID
+// GROUP BY
+//      c.Customer_ID, c.Name, c.Email, c.City, c.Phone_Number
+// ORDER BY
+//      c.Customer_ID DESC;
+//     `;
+
+//     // Execute the query
+//     const [rows] = await mysql.execute(sqlQuery);
+
+//     const customerList: FilteredCustomer[] = rows as FilteredCustomer[];
+//     return customerList;
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch filtered Customers.");
+//   }
+// }
+
+export async function fetchFDList(customer_id: string) {
   try {
     const mysql = await connectToDatabase();
 
+    // const [rows]: [any[], any] = await mysql.query(
+    //   `SELECT FD_ID, Account_ID, Amount, Start_Date, FD_Plan_ID
+    //    FROM FD
+    //    WHERE Account_ID = ?`,
+    //   [account_id]
+    // );
+
     const [rows]: [any[], any] = await mysql.query(
-      `SELECT FD_ID, Account_ID, Amount, Start_Date, FD_Plan_ID
-       FROM FD
-       WHERE Account_ID = ?`,
-      [account_id]
+      `SELECT *
+       FROM FD f
+       JOIN Account a ON f.Account_ID = a.Account_ID
+       WHERE a.Customer_ID = ?`,
+      [customer_id]
     );
 
     const fdList: FD[] = rows.map((row) => ({
@@ -390,8 +435,14 @@ export interface FDPlan {
 export async function getUserAccounts(userId: string): Promise<Account[]> {
   try {
     const mysql = await connectToDatabase();
+
+    // const [rows] = await mysql.query(
+    //   `SELECT Account_ID FROM Saving_account WHERE Account_ID IN (SELECT Account_ID FROM Account WHERE Customer_ID = ?)`,
+    //   [userId]
+    // );
+
     const [rows] = await mysql.query(
-      `SELECT Account_ID, Balance FROM Account WHERE Customer_ID = ?`,
+      `SELECT Account_ID, Balance FROM Account WHERE Customer_ID = ? AND Account_ID IN (SELECT Account_ID FROM Saving_account)`,
       [userId]
     );
     console.log("account", rows);
@@ -832,7 +883,7 @@ export async function fetchCustomerAccounts(customer_id: string) {
 
     const [accounts]: [any[], any] = await mysql.query(
       `SELECT Account_ID 
-        FROM saving_account
+        FROM Account
         WHERE customer_ID = ?;`,
       [customer_id]
     );

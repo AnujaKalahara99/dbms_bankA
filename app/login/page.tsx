@@ -34,13 +34,14 @@ export default async function LoginPage() {
           <div className="w-full py-2">
             <b>Employee Email</b>
             <p>
-              use <u>mark.robinson@bank.com</u> with password <i>employee</i>
+              use <u>susa@putbooruwa.com</u> with password <i>employee</i>
             </p>
           </div>
           <div className="w-full py-2">
             <b>Manager Email</b>
             <p>
-              use <u>alice.johnson@bank.com</u> with password <i>employee</i>
+              use <u>nariya@peradeniya.com</u> or <u>haraka@thanakola.com</u>
+              with password <i>employee</i>
             </p>
           </div>
         </div>
