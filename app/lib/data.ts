@@ -37,6 +37,48 @@ import { RowDataPacket } from "mysql2";
 // Example: const account: ImportedAccount = ...
 import bcrypt from "bcrypt";
 
+export async function fetchCustomerName(customer_id: string): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT Name
+      FROM customer 
+      WHERE Customer_ID = ? 
+      LIMIT 1`,
+      [customer_id]
+    );
+
+    const customerName: string = rows[0].Name as string;
+
+    return customerName;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer data.");
+  }
+}
+
+export async function fetchEmployeeName(employee_id: string): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [rows]: [any[], any] = await mysql.query(
+      `SELECT Name
+      FROM employee 
+      WHERE Employee_ID = ? 
+      LIMIT 1`,
+      [employee_id]
+    );
+
+    const employeeName: string = rows[0].Name as string;
+
+    return employeeName;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer data.");
+  }
+}
+
 export async function fetchCustomerFull(customer_id: string) {
   try {
     const mysql = await connectToDatabase();
@@ -115,6 +157,120 @@ export async function fetchCustomersCount() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Customer count.");
+  }
+}
+
+export async function fetchCustomersAccountsCount(
+  customer_id: string
+): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows]: [any[], any] = await mysql.query(
+      "SELECT COUNT(*) as count FROM Account JOIN Customer ON Account.Customer_ID = Customer.Customer_ID WHERE Customer.Customer_ID = ?;",
+      [customer_id]
+    );
+
+    return rows[0].count;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer Accounts count.");
+  }
+}
+
+export async function fetchBankBranch(employee_id: string): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows]: [any[], any] = await mysql.query(
+      "SELECT b.Name AS Branch_Name FROM Branch b JOIN Employee e ON e.Branch_ID = b.Branch_ID WHERE Employee_ID = ?;",
+      [employee_id]
+    );
+
+    return rows[0].Branch_Name;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Bank Accounts count.");
+  }
+}
+
+export async function fetchBankAccountsCount(
+  employee_id: string
+): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows]: [any[], any] = await mysql.query(
+      "SELECT Branch_ID FROM Employee WHERE Employee_ID = ?;",
+      [employee_id]
+    );
+
+    const [rows2]: [any[], any] = await mysql.query(
+      "SELECT COUNT(*) as count FROM Account WHERE Branch_ID = ?;",
+      [rows[0].Branch_ID]
+    );
+
+    return rows2[0].count;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Bank Accounts count.");
+  }
+}
+
+export async function fetchBankLoansCount(
+  employee_id: string
+): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows]: [any[], any] = await mysql.query(
+      "SELECT Branch_ID FROM Employee WHERE Employee_ID = ?;",
+      [employee_id]
+    );
+
+    const [rows2]: [any[], any] = await mysql.query(
+      "SELECT COUNT(*) as count FROM Loan l JOIN Account a ON a.Account_ID = l.Account_ID WHERE a.Branch_ID = ?;",
+      [rows[0].Branch_ID]
+    );
+
+    return rows2[0].count;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Bank Loans count.");
+  }
+}
+
+export async function fetchCustomersFDCount(
+  customer_id: string
+): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const [rows]: [any[], any] = await mysql.query(
+      "SELECT COUNT(*) as count FROM Account JOIN Customer ON Account.Customer_ID = Customer.Customer_ID WHERE Customer.Customer_ID = ?;",
+      [customer_id]
+    );
+    console.log(rows);
+
+    return rows[0].count;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Customer count.");
+  }
+}
+
+export async function fetchCustomerTotalBalance(
+  customer_id: string
+): Promise<string> {
+  try {
+    const mysql = await connectToDatabase();
+    const sqlQuery = `
+SELECT SUM(Balance) AS Total_Balance
+FROM Account
+WHERE Customer_ID = ?;
+`;
+    const [rows]: [any[], any] = await mysql.query(sqlQuery, [customer_id]);
+    console.log(rows);
+
+    return rows[0].Total_Balance;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Total_Balance.");
   }
 }
 

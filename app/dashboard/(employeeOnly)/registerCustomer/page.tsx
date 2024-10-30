@@ -6,8 +6,6 @@ import { RegisterCustomerForm } from "@/app/ui/dashboard/registerCustomer/regist
 
 export default async function Page() {
   try {
-
-
     return (
       <div>
         <h1>Register Customer</h1>
