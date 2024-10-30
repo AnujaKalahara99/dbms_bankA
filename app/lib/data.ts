@@ -897,3 +897,42 @@ export async function getFD(customer_id: string): Promise<FD_view[]> {
     throw new Error("Failed to fetch fd.");
   }
 }
+
+export async function CheckCustomer(customer_id: string) {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [customer]: [any[], any] = await mysql.query(
+      `use BANKA;
+        SELECT COUNT(Account_ID) as countAID
+        FROM account
+        WHERE Account_ID = ?;`,
+      [customer_id]
+    );
+    //console.log(accounts);
+    return JSON.stringify(customer);
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+export default async function fetchAccountBalance(customer_ID: string) {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [accounts]: [any[], any] = await mysql.query(
+      `SELECT account.Account_ID AS account_ID , Balance , Account_Type , Remaining_Withdrawals
+      FROM account
+      LEFT JOIN saving_account
+      ON account.Account_ID = saving_account.Account_ID
+      WHERE Customer_ID = ?;`,
+      [customer_ID]
+    );
+    //console.log(accounts);
+    return accounts;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Branches data.");
+  }
+}

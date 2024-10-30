@@ -41,13 +41,6 @@ const links = [
     viewOnly: "customer",
   },
   {
-    name: "ATM",
-    href: "/dashboard/atm",
-    icon: CalculatorIcon,
-    viewOnly: "customer",
-  },
-
-  {
     name: "Transactions",
     href: "/dashboard/transaction",
     icon: DocumentDuplicateIcon,
@@ -117,6 +110,12 @@ const links = [
     name: "Create FD",
     href: "/dashboard/fd/newFD",
     icon: ClipboardDocumentIcon,
+    viewOnly: "customer",
+  },
+  {
+    name: "ATM/CDM",
+    href: "/dashboard/atm",
+    icon: CalculatorIcon,
     viewOnly: "customer",
   },
   {

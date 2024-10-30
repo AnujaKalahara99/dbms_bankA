@@ -1,15 +1,11 @@
 "use client";
 import { Button } from "@/app/ui/button";
 import { OnlineTransfer } from "@/app/lib/actions";
-import { useEffect, useState } from "react";
-import Success from "./Success/page";
-import EnterPassword from "./EnterPassword";
-import { set } from "zod";
+import {useState } from "react";
 import { checkPassword } from "@/app/lib/actions";
 
 export default function TransactionForm({customer_id , allAccounts , branchesDetails} : {customer_id : string , allAccounts : any[] , branchesDetails : any[]}) {
     const [errorMessage, setErrorMessage] = useState('');
-    const [loading, setLoading] = useState(false);
     const [showEnterPassword, setShowEnterPassword] = useState(false);
     const [newformData , setnewformData] = useState(new FormData());
     const [password , setPassword] = useState("");
@@ -61,7 +57,6 @@ export default function TransactionForm({customer_id , allAccounts , branchesDet
         console.log(passwordsMatch);
 
         if(passwordsMatch){
-            setLoading(true);
             const success = await OnlineTransfer(newformData);
             if (success) {
             window.location.href = "./transfer/Success";

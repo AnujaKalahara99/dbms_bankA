@@ -3,6 +3,8 @@ import { lusitana } from "@/app/ui/fonts";
 import Search from "@/app/ui/search";
 import { Customer, FilteredCustomer } from "@/app/lib/definitions";
 import { UpdateCustomer } from "./buttons";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { CheckCustomer } from '@/app/lib/data';
 
 export default async function CustomersTableCustomersTable({
   customers,
