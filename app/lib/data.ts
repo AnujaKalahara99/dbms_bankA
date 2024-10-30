@@ -48,13 +48,15 @@ export async function fetchCustomerFull(customer_id: string) {
       FROM customer c 
       JOIN Account a ON a.Customer_ID = c.Customer_ID 
       JOIN Branch b ON a.Branch_ID = b.Branch_ID 
-      WHERE c.Customer_ID = ? 
-      LIMIT 1`,
+      WHERE c.Customer_ID = ?;`, 
       [customer_id]
     );
 
+
     const customerRow: any = rows[0];
 
+    console.log(customerRow);
+    
     // Structure the data into the FullCustomerDetails interface
     const fullCustomerDetails: FullCustomerDetails = {
       Customer_ID: customerRow.Customer_ID,
@@ -658,7 +660,7 @@ export async function fetchCustomerAccounts(customer_id: string) {
 
     const [accounts]: [any[], any] = await mysql.query(
       `SELECT Account_ID 
-        FROM account
+        FROM saving_account
         WHERE customer_ID = ?;`,
       [customer_id]
     );
