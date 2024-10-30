@@ -13,7 +13,12 @@ export default function CreateLoan({ fd }: { fd: FD_view[] }) {
   const [accountId, setAccountId] = useState<number | null>(null);
   const [loanAmount, setLoanAmount] = useState<number >(0) ;
   const [duration, setDuration] = useState<number>(6); // Default to 6 months
-  const [interestRate, setInterestRate] = useState<number>(0);
+  const [interestRate, setInterestRate] = useState<number>(12);
+
+  const handleIntrestRateChange = (value: number) => {
+    setDuration(value);
+    setInterestRate(value==6?12:10);
+  };
 
   const [selectedFD, setSelectedFD] = useState('');
   const handleSelectChange = (value: string) => {
@@ -105,14 +110,14 @@ export default function CreateLoan({ fd }: { fd: FD_view[] }) {
           <button
             type="button"
             className={`flex-1 py-2 rounded-lg text-white ${duration === 6 ? 'bg-blue-500' : 'bg-gray-300'}`}
-            onClick={() => setInterestRate(12)}
+            onClick={() => handleIntrestRateChange(6)}
           >
             6 Months
           </button>
           <button
             type="button"
             className={`flex-1 py-2 rounded-lg text-white ${duration === 12 ? 'bg-blue-500' : 'bg-gray-300'}`}
-            onClick={() => setInterestRate(10)}
+            onClick={() => handleIntrestRateChange(12)}
           >
             12 Months
           </button>

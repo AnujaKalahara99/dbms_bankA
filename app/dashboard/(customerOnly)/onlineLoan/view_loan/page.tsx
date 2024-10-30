@@ -55,7 +55,7 @@ try {
               <td className="border border-gray-300 px-4 py-2">{loan.Duration_in_Months}</td>
               <td className="border border-gray-300 px-4 py-2">{loan.Account_ID}</td>
               <td className="border border-gray-300 px-4 py-2">
-                {loan.Fixed_Deposit_ID || 'N/A'}
+                {loan.Fixed_Deposit_ID }
               </td>
             </tr>
           ))}

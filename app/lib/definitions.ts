@@ -180,7 +180,7 @@ export interface Loan_view {
   Issued_Date: Date;
   Duration_in_Months: number;
   Account_ID: number;
-  Fixed_Deposit_ID: number | null;
+  Fixed_Deposit_ID: string;
 }
 
 
@@ -197,7 +197,7 @@ export interface LoanResponse {
 
 export interface LoanResult {
   Loan_ID:string;
-  Amount :number | null ;
+  Amount :number ;
   Interest_Rate : number;
   Duration_in_Months: number;
   Account_ID: number;

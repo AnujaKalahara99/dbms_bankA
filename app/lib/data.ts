@@ -164,17 +164,18 @@ export async function fetchLoans(customer_id: string): Promise<Loan_view[]> {
     const [rows] = await mysql.query(`
       
        select 
-       Loan_ID, 
+       loan.Loan_ID, 
        loan.Amount, 
        Interest_Rate, 
        Issued_Date, 
        Duration_in_Months, 
        loan.Account_ID,
-       FD_ID
+       Fixed_Deposit_ID
        FROM loan
-       LEFT JOIN fd ON loan.Account_ID = fd.Account_ID
        LEFT JOIN account ON loan.Account_ID = account.Account_ID
-       WHERE customer_id = ?;`,
+       LEFT JOIN online_loan ON loan.Loan_ID = online_loan.Loan_ID
+       
+       WHERE account.customer_id = ?;`,
 
       [customer_id]);
 
