@@ -91,8 +91,7 @@ export async function fetchCustomerFull(customer_id: string) {
       FROM customer c 
       JOIN Account a ON a.Customer_ID = c.Customer_ID 
       JOIN Branch b ON a.Branch_ID = b.Branch_ID 
-      WHERE c.Customer_ID = ? 
-      LIMIT 1`,
+      WHERE c.Customer_ID = ?;`,
       [customer_id]
     );
 
@@ -790,6 +789,24 @@ export async function fetchAcountDetails(customer_id: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Branches data.");
+  }
+}
+
+export async function fetchAllLoanInstallments(loanId: string) {
+  try {
+    const mysql = await connectToDatabase();
+
+    const [installments]: [any[], any] = await mysql.query(
+      `SELECT Instalment_ID, Due_Date, Amount, Status, Loan_ID
+       FROM loan_installments
+       WHERE Loan_ID = ?;`,
+      [loanId]
+    );
+
+    return installments;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch loan installments.");
   }
 }
 
