@@ -185,14 +185,14 @@ export async function createFD(formData: FormData) {
       FD_Plan_ID: formData.get("fdPlan"),
       startDate: formData.get("startDate"),
     });
-
+    console.log(accountId, amount, FD_Plan_ID)
     // Connect to the MySQL database
     const mysql = await connectToDatabase();
-
+    
     // Call the stored procedure to handle FD creation and account update
     const [result]: any = await mysql.query(
-      `CALL CreateFDWithCustomIncrement(?, ?, ?, ?)`,
-      [accountId, amount, startDate, FD_Plan_ID]
+      `CALL CreateFD(?, ?, ?)`,
+      [accountId, amount, FD_Plan_ID]
     );
 
     // Extract FD_ID and message from result
@@ -204,7 +204,7 @@ export async function createFD(formData: FormData) {
     return { success: true, message, fdId };
   } catch (error) {
     console.error("Error creating FD:", error);
-    throw new Error("Failed to create FD.");
+    throw  new Error("Failed to create FD.");
   }
 }
 
