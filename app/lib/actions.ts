@@ -175,5 +175,47 @@ export async function acceptManualLoan(Loan_ID: string , status: string){
     }
 
 }
-  
 
+export async function Deposite(Account_ID : string ,balance : number ,amount : number){ 
+  balance = amount + balance;
+  try{
+    const mysql = await connectToDatabase();
+    await mysql.query(
+      `UPDATE account
+      SET Balance = ?
+      WHERE Account_ID = ?;`,
+      [balance , Account_ID]
+    );
+    console.log("accountid" , Account_ID);
+  
+    }catch(error){
+      console.log(error);
+      console.log("Deposite" , amount);
+    }
+  
+}
+//mekai ita uda ekai hriyata data base eke implement krla hdanna one balance eca meke nemene mewa kranne
+export async function Withdraw(Account_ID: string, balance: number, amount: number) {
+    balance = balance - amount;
+    try {
+        const mysql = await connectToDatabase();
+        console.log("Printed");
+
+        // Set the error message variable
+        await mysql.query(`SET @errorMessage = "";`);
+
+        // Call the stored procedure
+        await mysql.query(`CALL Withdrawal(?, ?, @errorMessage);`, [Account_ID, amount]);
+        
+        const [rows]: [any[] , any ] = await mysql.query(`SELECT @errorMessage AS errorMessage;`);
+        // const errorMessage = rows[0].errorMessage;
+
+        console.log("errorMessage =", rows[0].errorMessage);
+        
+
+        return rows[0].errorMessage;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
