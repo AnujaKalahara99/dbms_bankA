@@ -29,7 +29,7 @@ export default function Menu({balanceDetails} : {balanceDetails : any[]}){
         setInvalidAmount(false);
         //Try catch ekk gahanna thynwa
         console.log(Account_ID);
-        Deposite(Account_ID , balance , amount);
+        await Deposite(Account_ID , balance , amount);
         window.location.href = "/dashboard/atm/Successfull";
 
     }
