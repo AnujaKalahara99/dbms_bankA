@@ -349,3 +349,60 @@ export async function acceptManualLoan(Loan_ID: string, status: string) {
     console.log(error);
   }
 }
+
+export async function registerCustomer(formData: FormData) {
+  try {
+    const {
+      Name,
+      Address_Line_1,
+      Address_Line_2,
+      City,
+      Phone_Number,
+      Email,
+      IdentityNum,
+      DateInfo,
+      Customer_Type,
+    } = CusRegSchema.parse({
+      Name: formData.get("name"),
+      Address_Line_1: formData.get("address_line_1"),
+      Address_Line_2: formData.get("address_line_2"),
+      City: formData.get("city"),
+      Phone_Number: formData.get("phone_number"),
+      Email: formData.get("email"),
+      IdentityNum: formData.get("identity_num"),
+      DateInfo: formData.get("date_info"),
+      Customer_Type: formData.get("customer_type"),
+    });
+
+    const temp_password = "00000";
+
+    const mysql = await connectToDatabase();
+
+    await mysql.query("CALL RegisterCustomer (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+      Name,
+      Address_Line_1,
+      Address_Line_2,
+      City,
+      Email,
+      Phone_Number,
+      temp_password,
+      IdentityNum,
+      DateInfo,
+      Customer_Type,
+    ]);
+
+    console.log("Customer Registered successfully!");
+    return { success: true };
+  } catch (error: unknown) {
+    // Check if error is an object and has a message property
+    if (typeof error === "object" && error !== null && "message" in error) {
+      const err = error as { message: string };
+      return {
+        success: false,
+        message: err.message || "Failed to Regsiter Customer.",
+      };
+    } else {
+      return { success: false, message: "An unknown error occurred." };
+    }
+  }
+}
