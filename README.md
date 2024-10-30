@@ -1,10 +1,32 @@
 # Welcome to Bank A Repo!
 
-![Loading Page](readme-data/1.png)
-![Customer Dashboard](readme-data/3.png)
+Hi! This is the official repository holding valuable code of **Bank A** website.
+
+## ![Loading Page](readme-data/1.png)
+
+## ![Customer Dashboard](readme-data/3.png)
+
 ![Employee Dashboard](readme-data/2.png)
 
-Hi! This is the official repository holding valuable code of **Bank A** website.
+## Task Given
+
+The task involves designing a comprehensive database system for "Bank A," a high-security private bank in Seychelles, as part of their transition from an outdated DOS-based system to a modern Core Banking System (CBS). This new system aims to meet regulatory compliance and facilitate connectivity with the country’s banking network for features like ATM access and inter-bank transfers.
+
+**Key features to design in the database include:**
+
+1. **Branch Management:** Manage data on branches, branch managers, and employees who need access to the CBS.
+2. **Customer and Account Management:** Track customer data (individuals and organizations) and their accounts, including two types of accounts—Savings (with interest and withdrawal limits) and Current (no interest or limits), as well as Fixed Deposits (FDs).
+3. **Loan Processing:** Allow employees to create loan applications requiring branch manager approval, and support instant online loans based on customers' existing FDs.
+4. **Transaction Handling:** Enable internal fund transfers without fees, and withdrawal transactions, ensuring that only same-bank transfers are processed.
+5. **Reports:** Generate branch-specific reports, such as transaction summaries and overdue loan installments, accessible only to branch managers.
+
+**Technical Requirements:**
+
+- Model relationships, primary/foreign keys, and indexes.
+- Ensure data consistency through procedures, functions, and triggers for ACID compliance.
+- Populate the database with dummy data for testing.
+
+The final database solution will showcase branch and account management, fund transfers, loan processing, and basic report generation for internal testing and validation.
 
 ## Steps to Run
 
