@@ -177,14 +177,11 @@ export async function acceptManualLoan(Loan_ID: string , status: string){
 }
 
 export async function Deposite(Account_ID : string ,balance : number ,amount : number){ 
-  balance = amount + balance;
   try{
     const mysql = await connectToDatabase();
     await mysql.query(
-      `UPDATE account
-      SET Balance = ?
-      WHERE Account_ID = ?;`,
-      [balance , Account_ID]
+      `call Deposite(?,?);`,
+      [Account_ID ,amount ]
     );
     console.log("accountid" , Account_ID);
   
