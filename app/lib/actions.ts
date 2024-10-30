@@ -197,15 +197,16 @@ export async function createFD(formData: FormData) {
       FD_Plan_ID: formData.get("fdPlan"),
       // startDate: formData.get("startDate"),
     });
-    console.log(accountId, amount, FD_Plan_ID)
+    console.log(accountId, amount, FD_Plan_ID);
     // Connect to the MySQL database
     const mysql = await connectToDatabase();
-    
+
     // Call the stored procedure to handle FD creation and account update
-    const [result]: any = await mysql.query(
-      `CALL CreateFD(?, ?,  ?)`,
-      [accountId, amount, FD_Plan_ID]
-    );
+    const [result]: any = await mysql.query(`CALL CreateFD(?, ?,  ?)`, [
+      accountId,
+      amount,
+      FD_Plan_ID,
+    ]);
 
     // Extract FD_ID and message from result
     const fdId = result[0]?.FD_ID;
@@ -216,7 +217,7 @@ export async function createFD(formData: FormData) {
     return { success: true, message, fdId };
   } catch (error) {
     console.error("Error creating FD:", error);
-    throw  new Error("Failed to create FD.");
+    throw new Error("Failed to create FD.");
   }
 }
 
@@ -456,15 +457,9 @@ export async function Deposite(
   balance: number,
   amount: number
 ) {
-  balance = amount + balance;
   try {
     const mysql = await connectToDatabase();
-    await mysql.query(
-      `UPDATE account
-      SET Balance = ?
-      WHERE Account_ID = ?;`,
-      [balance, Account_ID]
-    );
+    await mysql.query(`call Deposit(?,?);`, [Account_ID, amount]);
     console.log("accountid", Account_ID);
   } catch (error) {
     console.log(error);
