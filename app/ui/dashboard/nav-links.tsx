@@ -49,8 +49,14 @@ const links = [
 
   {
     name: "Transactions",
-    href: "/dashboard/transactions",
+    href: "/dashboard/transaction",
     icon: DocumentDuplicateIcon,
+    viewOnly: "employee",
+  },
+  {
+    name: "Customer Registration",
+    href: "/dashboard/registerCustomer",
+    icon: UserIcon,
     viewOnly: "employee",
   },
   {
@@ -60,10 +66,22 @@ const links = [
     viewOnly: "customer",
   },
   {
+    name: "Create Account",
+    href: "/dashboard/createAccount",
+    icon: SquaresPlusIcon,
+    viewOnly: "employee",
+  },
+  {
     name: "Customers",
     href: "/dashboard/customers",
     icon: UserGroupIcon,
     viewOnly: "employee",
+  },
+  {
+    name: "Employees",
+    href: "/dashboard/employeeDetails",
+    icon: UserGroupIcon,
+    viewOnly: "manager",
   },
   {
     name: "Branch Report",
@@ -99,7 +117,7 @@ const links = [
     name: "Pending Loans",
     href: "/dashboard/PendingLoans", // i need to set loacation of pending loans wich is in Manageronly folder
     icon: ClockIcon,
-    viewOnly: "employee",
+    viewOnly: "manager",
   },
 ];
 

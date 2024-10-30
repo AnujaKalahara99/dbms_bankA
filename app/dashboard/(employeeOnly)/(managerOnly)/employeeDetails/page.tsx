@@ -45,9 +45,6 @@ export default async function Page() {
 
     return (
       <main className="p-6">
-        <h1 className={`${lusitana.className} mb-6 text-2xl`}>
-          Manager Dashboard
-        </h1>
         <ManagerDashboard employees={employees} />{" "}
         {/* Pass employees to the dashboard */}
       </main>
@@ -56,9 +53,6 @@ export default async function Page() {
     console.error("Error fetching employees:", error);
     return (
       <main className="p-6">
-        <h1 className={`${lusitana.className} mb-6 text-2xl`}>
-          Manager Dashboard
-        </h1>
         <div className="text-red-600">Failed to load employee data.</div>
       </main>
     );

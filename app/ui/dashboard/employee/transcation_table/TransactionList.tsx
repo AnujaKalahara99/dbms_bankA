@@ -1,15 +1,16 @@
 import { EmployeeTransaction } from "@/app/lib/definitions";
 import TransactionItem from "./TransactionItem";
 
-
 interface TransactionListProps {
   transactions: EmployeeTransaction[];
 }
 
-export default function TransactionLists({ transactions }: TransactionListProps) {
+export default function TransactionLists({
+  transactions,
+}: TransactionListProps) {
   return (
     <div className="transaction-list">
-      <h2 className="text-xl font-bold mb-4">Transactions</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Transactions</h2> */}
       <table className="w-full table-auto border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -25,7 +26,10 @@ export default function TransactionLists({ transactions }: TransactionListProps)
         </thead>
         <tbody>
           {transactions.map((transaction) => (
-            <TransactionItem key={transaction.Transaction_ID} transaction={transaction} />
+            <TransactionItem
+              key={transaction.Transaction_ID}
+              transaction={transaction}
+            />
           ))}
         </tbody>
       </table>

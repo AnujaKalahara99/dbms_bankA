@@ -3,12 +3,15 @@ import { fetchSAccountPlanTypes, fetchBranch } from "@/app/lib/data"; // import 
 import { PlanType, Branch } from "@/app/lib/definitions"; // import your interfaces
 import { CreateAccountForm } from "@/app/ui/dashboard/createAccount/create-account-form";
 import { RegisterCustomerForm } from "@/app/ui/dashboard/registerCustomer/register-customer-form";
+import { lusitana } from "@/app/ui/fonts";
 
 export default async function Page() {
   try {
     return (
       <div>
-        <h1>Register Customer</h1>
+        <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+          Register Customer
+        </h1>
         <RegisterCustomerForm />
       </div>
     );
