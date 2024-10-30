@@ -58,6 +58,15 @@ const LoanSchema = z.object({
   Fixed_Deposit_ID: z.string().optional(), // Optional, if it may not always be present
 });
 
+// Define FD schema using zod for validation
+const FDSchema = z.object({
+  accountId: z.string().max(16), // Matches Account_ID VARCHAR(16)
+  amount: z.number().min(0), // Ensures a positive deposit amount
+  //fdPlan: z.string(),            // Can be validated for specific plan types if necessary
+  FD_Plan_ID: z.string(), // Adding FD_Plan_ID to the schema
+  // startDate: z.string(), // Start Date as a string (YYYY-MM-DD format)
+});
+
 // const UpdateCustomer = CustomerSchema.omit({ Customer_ID: true });
 
 export async function updateCustomer(formData: FormData) {
@@ -177,34 +186,25 @@ export async function updateCustomer(formData: FormData) {
 //   }
 // }
 
-// Define FD schema using zod for validation
-const FDSchema = z.object({
-  accountId: z.string().max(16), // Matches Account_ID VARCHAR(16)
-  amount: z.number().min(0), // Ensures a positive deposit amount
-  //fdPlan: z.string(),            // Can be validated for specific plan types if necessary
-  FD_Plan_ID: z.string(), // Adding FD_Plan_ID to the schema
-  startDate: z.string(), // Start Date as a string (YYYY-MM-DD format)
-});
-
 // Function to create FD and update account
 export async function createFD(formData: FormData) {
   try {
     // Parse the incoming form data using the FDSchema for validation
 
-    const { accountId, amount, startDate, FD_Plan_ID } = FDSchema.parse({
+    const { accountId, amount, FD_Plan_ID } = FDSchema.parse({
       accountId: formData.get("accountId"),
       amount: Number(formData.get("amount")),
       FD_Plan_ID: formData.get("fdPlan"),
-      startDate: formData.get("startDate"),
+      // startDate: formData.get("startDate"),
     });
-
+    console.log(accountId, amount, FD_Plan_ID)
     // Connect to the MySQL database
     const mysql = await connectToDatabase();
-
+    
     // Call the stored procedure to handle FD creation and account update
     const [result]: any = await mysql.query(
-      `CALL CreateFDWithCustomIncrement(?, ?, ?, ?)`,
-      [accountId, amount, startDate, FD_Plan_ID]
+      `CALL CreateFD(?, ?,  ?)`,
+      [accountId, amount, FD_Plan_ID]
     );
 
     // Extract FD_ID and message from result
@@ -216,7 +216,7 @@ export async function createFD(formData: FormData) {
     return { success: true, message, fdId };
   } catch (error) {
     console.error("Error creating FD:", error);
-    throw new Error("Failed to create FD.");
+    throw  new Error("Failed to create FD.");
   }
 }
 

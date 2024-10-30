@@ -97,6 +97,8 @@ export async function fetchCustomerFull(customer_id: string) {
 
     const customerRow: any = rows[0];
 
+    console.log(customerRow);
+
     // Structure the data into the FullCustomerDetails interface
     const fullCustomerDetails: FullCustomerDetails = {
       Customer_ID: customerRow.Customer_ID,
@@ -830,7 +832,7 @@ export async function fetchCustomerAccounts(customer_id: string) {
 
     const [accounts]: [any[], any] = await mysql.query(
       `SELECT Account_ID 
-        FROM account
+        FROM saving_account
         WHERE customer_ID = ?;`,
       [customer_id]
     );
