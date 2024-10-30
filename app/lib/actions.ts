@@ -180,7 +180,7 @@ export async function Deposite(Account_ID : string ,balance : number ,amount : n
   try{
     const mysql = await connectToDatabase();
     await mysql.query(
-      `call Deposite(?,?);`,
+      `call Deposit(?,?);`,
       [Account_ID ,amount ]
     );
     console.log("accountid" , Account_ID);
